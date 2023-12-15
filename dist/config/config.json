@@ -1,0 +1,8 @@
+{
+    "mailConfig": {
+        "host": "smtp.ethereal.email",
+        "port": 587,
+        "user": "oma.fisher43@ethereal.email",
+        "password": "9apvqjQBp6kY1K6vCu"
+    }
+}
