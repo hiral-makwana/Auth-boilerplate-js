@@ -2,7 +2,7 @@
   "name": "auth-boilerplate",
   "version": "1.0.8",
   "description": "",
-  "main": "src/server.ts",
+  "main": "src/server.js",
   "bin": {
     "auth-boilerplate": "src/index.js"
   },
@@ -37,6 +37,7 @@
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "celebrate": "^15.0.1",
+    "cors": "^2.8.5",
     "cross-spawn": "^7.0.3",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",

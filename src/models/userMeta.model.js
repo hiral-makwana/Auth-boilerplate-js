@@ -1,0 +1,35 @@
+const { Model, Sequelize, DataTypes } = require('sequelize');
+
+module.exports = (sequelize, DataTypes) => {
+    class UserMeta extends Model {
+    };
+    UserMeta.init({
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        userId: {
+            type: DataTypes.INTEGER,
+        },
+        key: {
+            type: DataTypes.STRING,
+        },
+        value: {
+            type: DataTypes.STRING,
+        },
+        createdBy: {
+            type: DataTypes.INTEGER,
+        },
+        updatedBy: {
+            type: DataTypes.INTEGER,
+        },
+    },
+        {
+            sequelize,
+            tableName: "user_meta",
+            modelName: 'UserMeta'
+        });
+
+    return UserMeta
+};
