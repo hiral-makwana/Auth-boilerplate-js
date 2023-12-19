@@ -1,31 +1,25 @@
 const multer = require('multer');
 const fs = require('fs');
+const config = require('../config/config.json');
+const path = require('path');
 
-let globalFileUploader;
+const uploadFolder = config.UPLOAD_DIR || 'uploads/';
 
-const createDirectory = (directoryPath) => {
-  if (!fs.existsSync(directoryPath)) {
-    fs.mkdirSync(directoryPath);
-  }
-};
+if (!fs.existsSync(uploadFolder)) {
+  fs.mkdirSync(uploadFolder);
+}
+// Set up multer storage and file filtering
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadFolder);
+  },
+  filename: function (req, file, cb) {
+    file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf-8');
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  },
+});
 
-const createUploader = (options = {}) => {
-  // Set up multer storage and file filtering
-  const uploadFolder = options.uploadFolder || 'uploads/';
-
-  createDirectory(uploadFolder);
-
-  const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, uploadFolder);
-    },
-    filename: function (req, file, cb) {
-      file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf-8');
-      cb(null, file.originalname);
-    },
-  });
-
-  return multer({ storage: storage }).single('avatar');
-};
-
-module.exports = { createUploader };
+const upload = multer({
+  storage: storage
+})
+module.exports = upload

@@ -1,4 +1,20 @@
 {
+   "PORT": 7000,
+   "JWT_SECRET": "ja932uwsjsiw98hjsdh090",
+   "JWT_EXPIRATION_TIME": "1h",
+   "DEFAULT_ROUTE": "/user",
+   "API_BASE_PREFIX": "/v1/user",
+   "BASE_URL": "localhost:7000",
+   "HARD_DELETE": false,
+   "CUSTOM_TEMPLATE": true,
+   "UPLOAD_DIR": "src/pictures/",
+   "database": {
+      "host": "localhost",
+      "dbName": "auth_apis",
+      "dbUser": "root",
+      "dbPassword": ""
+   },
+   "SMTP": true,
    "mailConfig": {
       "host": "smtp.ethereal.email",
       "port": 587,

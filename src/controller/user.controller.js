@@ -5,8 +5,8 @@ const { keyName, requestType } = require("../helper/constant");
 const { generateRandomOtp, generateHash, generateOtpHtmlMessage } = require('../helper/utils');
 const { status } = require('../helper/constant');
 const { generateToken } = require('../helper/jwtToken');
-//const config = require('../config/config.json');
-const { Op } = require('sequelize');
+const config = require('../config/config.json');
+const { Sequelize, Op } = require('sequelize');
 const path = require('path');
 
 const otpHtmlTemplatePath = path.join('src/email_templates', 'otpTemplate.html');
@@ -20,7 +20,7 @@ const resendOtpTemplatePath = path.join('src/email_templates', 'resendOtpTemplat
 * /list:
 *   get:
 *     summary: Get a list of users
-*     tags: [Users]
+*     tags: [User]
 *     parameters:
 *       - in: header
 *         name: Accept-Language
@@ -52,7 +52,7 @@ const resendOtpTemplatePath = path.join('src/email_templates', 'resendOtpTemplat
 */
 exports.getListOfUser = async (req, res) => {
     try {
-        let allData = await User.findAll({});
+        let allData = await User.findAll({ where: { isDeleted: { [Op.or]: [null, 0] } } });
         return res.status(200).send({ status: true, message: res.__("SUCCESS_FETCHED"), data: allData });
     } catch (e) {
         console.log(e);
@@ -129,7 +129,7 @@ exports.registerUser = async (req, res) => {
                 };
                 await UserMeta.create(metaObj);
                 let customOtpHtmlTemplate = otpHtmlTemplatePath;
-                if (process.env.CUSTOM_TEMPLATE == 'true') {
+                if (config.CUSTOM_TEMPLATE == true) {
                     if (reqData.customOtpHtmlTemplate == undefined || reqData.customOtpHtmlTemplate == '') {
                         return res.status(200).send({ status: true, message: res.__("TEMPLATE_NOT_DEFINE") });
                     } else {
@@ -140,7 +140,7 @@ exports.registerUser = async (req, res) => {
                     username: jsonObj.firstName,
                     otpCode: getRandomOtp
                 };
-                const otpHtmlMessage = await generateOtpHtmlMessage(jsonObj.email, process.env.CUSTOM_TEMPLATE, customOtpHtmlTemplate, "Registration done successfully. Here is your OTP for verification.", templatedata);
+                const otpHtmlMessage = await generateOtpHtmlMessage(jsonObj.email, config.CUSTOM_TEMPLATE, customOtpHtmlTemplate, "Registration done successfully. Here is your OTP for verification.", templatedata);
 
                 return res.status(200).send({ status: true, message: res.__("SUCCESS_CREATE") });
             } else {
@@ -318,7 +318,7 @@ exports.resendOTP = async (req, res) => {
         await UserMeta.update({ value: newOTP.toString() }, { where: { userId: user.id, key: keyName } });
 
         let customTemplate = resendOtpTemplatePath;
-        if (process.env.CUSTOM_TEMPLATE == 'true') {
+        if (config.CUSTOM_TEMPLATE == true) {
             if (customOtpHtmlTemplate == undefined || customOtpHtmlTemplate == '') {
                 return res.status(200).send({ status: true, message: res.__("TEMPLATE_NOT_DEFINE") });
             } else {
@@ -329,7 +329,7 @@ exports.resendOTP = async (req, res) => {
             username: user.firstName,
             otpCode: newOTP
         };
-        const otpHtmlMessage = await generateOtpHtmlMessage(user.email, process.env.CUSTOM_TEMPLATE, customTemplate, "OTP Verification.", templatedata);
+        const otpHtmlMessage = await generateOtpHtmlMessage(user.email, config.CUSTOM_TEMPLATE, customTemplate, "OTP Verification.", templatedata);
 
         return res.status(200).json({
             status: true,
@@ -508,7 +508,7 @@ exports.resetPassword = async (req, res) => {
  * /login:
  *   post:
  *     summary: User login
- *     tags: [Authentication]
+ *     tags: [User]
  *     parameters:
  *       - in: header
  *         name: Accept-Language
@@ -605,7 +605,7 @@ exports.logIn = async (req, res) => {
 * /changePassword:
 *   post:
 *     summary: Change user password after login
-*     tags: [Authentication]
+*     tags: [User]
 *     parameters:
 *       - in: header
 *         name: Accept-Language
@@ -699,7 +699,7 @@ exports.changePassword = async (req, res) => {
 * /checkValidation:
 *   post:
 *     summary: Check if a value exists in the database
-*     tags: [Authentication]
+*     tags: [User]
 *     parameters:
 *       - in: header
 *         name: Accept-Language
@@ -781,7 +781,7 @@ exports.checkValidation = async (req, res) => {
 * /deleteUser/{userId}:
 *   delete:
 *     summary: Delete a user by ID
-*     tags: [Users]
+*     tags: [User]
 *     parameters:
 *       - in: header
 *         name: Accept-Language
@@ -837,7 +837,7 @@ exports.deleteUser = async (req, res) => {
             });
         }
 
-        if (!process.env.HARD_DELETE) {
+        if (!config.HARD_DELETE) {
             const modelAttributes = Object.keys(User.getAttributes());
 
             if (!modelAttributes.includes('isDeleted')) {
@@ -941,7 +941,6 @@ exports.profileUpload = async (req, res) => {
             return res.status(500).json({ status: false, message: res.__('IMAGE_FIELD_NOT_EXIST') });
         }
 
-        console.log(profileImage);
         const [updatedRows] = await User.update(
             { profileImage: profileImage.filename },
             { where: { id: userId } }
@@ -950,7 +949,7 @@ exports.profileUpload = async (req, res) => {
         if (updatedRows === 0) {
             return res.status(404).json({ status: false, message: res.__('USER_NOT_FOUND') });
         }
-        return res.status(200).json({ status: true, message: res.__('IMAGE_UPLOADED'), data: process.env.BASE_URL + `/${profileImage.destination}` + profileImage.filename });
+        return res.status(200).json({ status: true, message: res.__('IMAGE_UPLOADED'), data: config.BASE_URL + `/${profileImage.destination}` + profileImage.filename });
     } catch (e) {
         console.error(e);
         return res.status(500).json({
@@ -959,48 +958,48 @@ exports.profileUpload = async (req, res) => {
         });
     }
 };
-/**
- * @swagger
- * tags:
- *   name: Config
- *   description: Email Configuration
- * /updateEmailConfig:
- *   put:
- *     summary: Update email configuration
- *     tags: [Config]
- *     parameters:
- *       - in: header
- *         name: Accept-Language
- *         description: The preferred language for the response.
- *         required: false
- *         schema:
- *           type: string
- *     requestBody:
- *       description: New configuration data
- *       required: true
- *       content:
- *         application/json:
- *           example:
- *             host: smtp.example.com
- *             port: 587
- *             user: your_username
- *             pass: your_password
- *     responses:
- *       200:
- *         description: Successful response with update status
- *         content:
- *           application/json:
- *             example:
- *               success: true
- *               message: Config updated successfully
- *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             example:
- *               success: false
- *               message: Error updating config
- */
+// /**
+//  * @swagger
+//  * tags:
+//  *   name: Config
+//  *   description: Email Configuration
+//  * /updateEmailConfig:
+//  *   put:
+//  *     summary: Update email configuration
+//  *     tags: [Config]
+//  *     parameters:
+//  *       - in: header
+//  *         name: Accept-Language
+//  *         description: The preferred language for the response.
+//  *         required: false
+//  *         schema:
+//  *           type: string
+//  *     requestBody:
+//  *       description: New configuration data
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           example:
+//  *             host: smtp.example.com
+//  *             port: 587
+//  *             user: your_username
+//  *             pass: your_password
+//  *     responses:
+//  *       200:
+//  *         description: Successful response with update status
+//  *         content:
+//  *           application/json:
+//  *             example:
+//  *               success: true
+//  *               message: Config updated successfully
+//  *       500:
+//  *         description: Internal server error
+//  *         content:
+//  *           application/json:
+//  *             example:
+//  *               success: false
+//  *               message: Error updating config
+//  */
 // export const updateConfig = async (req: any, res: any) => {
 //     try {
 //         const newConfig = req.body;

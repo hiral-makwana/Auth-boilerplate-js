@@ -25,7 +25,7 @@
 	"HTML_TO_STRING": "HTML erfolgreich in Zeichenfolge umgewandelt.",
 	"NOT_VERIFIED": "Benutzer noch nicht verifiziert.",
 	"IMAGE_NOT_SELECTED": "Kein Profilbild bereitgestellt.",
-	"IMAGE_FIELD_NOT_EXIST": "\"ProfileImage\"-Feld nicht im Benutzermodell vorhanden.",
+	"IMAGE_FIELD_NOT_EXIST": "\"profileImage\"-Feld nicht im Benutzermodell vorhanden.",
 	"IMAGE_UPLOADED": "Profilbild erfolgreich hochgeladen.",
 	"CONFIG_UPDATED": "Konfiguration erfolgreich aktualisiert.",
 	"CONFIG_NOT_UPDATE": "Fehler beim Aktualisieren der Konfiguration.",

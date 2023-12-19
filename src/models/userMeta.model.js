@@ -1,4 +1,4 @@
-const { Model, Sequelize, DataTypes } = require('sequelize');
+const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
     class UserMeta extends Model {

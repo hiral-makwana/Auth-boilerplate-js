@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-//Usage: npx my-template my-app
-
 const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
@@ -44,14 +42,20 @@ async function main() {
         console.log('Installing dependencies...');
         execSync('npm install');
 
+        const filesToDelete = ['src/index.js', '.npmignore'];
         console.log('Removing useless files');
         execSync('npx rimraf ./.git');
-        const indexPath = path.join(projectDir, 'src/index.js')
-        fs.unlink(indexPath, (err) => {
-            if (err) throw err;
-        });
-        console.log('The installation is done, this is ready to use !');
 
+        filesToDelete.forEach((file) => {
+            const filePath = path.join(projectDir, file);
+        
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error(`Error deleting ${filePath}: ${err.message}`);
+                }
+            });
+        });        
+        console.log('.\n.\nThe installation is done, this is ready to use !');
     } catch (error) {
         console.log(error);
     }

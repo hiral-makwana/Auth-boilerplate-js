@@ -1,18 +1,8 @@
-const { Sequelize } = require('sequelize');
-const { UserLib } = require('./interfaces');
 const { Joi } = require('celebrate');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 const handlebars = require('handlebars');
 const { sendEmail } = require('../helper/emailConfig');
-
-function setSequelizeInstance(instance) {
-    global.sequelize = instance;
-}
-
-const getModels = () => {
-    return UserLib;
-};
 
 const dynamicFieldFunction = (customFields, validate) => {
     return Object.entries(customFields || {}).map(([fieldName, fieldType]) => {
@@ -72,7 +62,7 @@ const readHTMLFile = function (path, cb) {
 
 const generateOtpHtmlMessage = async (to, custom, template, emailSubject, templateData) => {
     return new Promise((resolve, reject) => {
-        if (custom == 'true') {
+        if (custom == true) {
             const compiledTemplate = handlebars.compile(template);
             const htmlToSend = compiledTemplate(templateData);
             const subject = emailSubject;
@@ -108,28 +98,10 @@ function convertHtmlToString(html) {
     }
 }
 
-function updateConfigFromJson(filePath) {
-    try {
-        const configFile = fs.readFileSync(filePath, 'utf-8');
-        const config = JSON.parse(configFile);
-
-        for (const key in config) {
-            process.env[key] = config[key];
-        }
-
-        console.log('Configuration updated successfully.');
-    } catch (error) {
-        console.error('Error updating configuration:', error.message);
-    }
-}
-
 module.exports = {
-    setSequelizeInstance,
-    getModels,
     dynamicFieldFunction,
     generateRandomOtp,
     generateHash,
     generateOtpHtmlMessage,
     convertHtmlToString,
-    updateConfigFromJson,
 };

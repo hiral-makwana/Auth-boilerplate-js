@@ -4,14 +4,14 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const { Op, QueryTypes } = require('sequelize');
+const config = require('../config/config.json');
 const basename = path.basename(__filename);
 const db = {};
-require('dotenv');
 
 // Create a new Sequelize instance for database connection
-const sequelize = new Sequelize('auth_apis', 'root', '', {
+const sequelize = new Sequelize(config.database.dbName, config.database.dbUser, config.database.dbPassword, {
     dialect: 'mysql',
-    host: 'localhost',
+    host: config.database.host,
     logging: false
 });
 

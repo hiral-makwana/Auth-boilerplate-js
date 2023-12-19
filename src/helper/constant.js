@@ -4,13 +4,10 @@ const requestType = {
     FORGOT: 'forgot',
 };
 
-const config = {
-    JWT_SECRET: 'NDUYehasgsqw978e2SHSHWid8u790',
-    JWT_EXPIRATION_TIME: '1h',
-};
 const status = {
     ACTIVE: 'active',
     DEACTIVE: 'deactive',
     DELETED: 'deleted',
 };
-module.exports = { keyName, requestType, config, status };
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$/;
+module.exports = { keyName, requestType, passwordRegex, status };

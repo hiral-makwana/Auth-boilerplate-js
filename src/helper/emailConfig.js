@@ -61,9 +61,9 @@ function updateEmailConfig(newConfig) {
 function sendEmail(to, subject, message) {
     return new Promise((resolve, reject) => {
         let transporter = null;
-        if (process.env.SMTP == 'true') {
+        if (config.SMTP == true) {
             if (!emailConfig) {
-                return Promise.reject(new Error('Email configuration is not initialized. Call initEmail() to set up the email configuration.'));
+                return Promise.reject(new Error('Email configuration is not initialized. update config file to set up the email configuration.'));
             }
             // Create a Nodemailer transporter with the provided email configuration
             transporter = nodemailer.createTransport(emailConfig);

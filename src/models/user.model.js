@@ -1,5 +1,5 @@
 const { Model } = require('sequelize');
-const student = require('c:/users/admin/desktop/alltasks/node-mysql/models/student');
+const { passwordRegex } = require('../helper/constant')
 
 /** User enum for status*/
 const status = {
@@ -7,7 +7,6 @@ const status = {
     DEACTIVE: 'deactive',
     DELETED: 'deleted',
 };
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$/;
 
 module.exports = (sequelize, DataTypes) => {
     class User extends Model {
@@ -28,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             validate: {
                 isStrongPassword(value) {
-                    if (!PASSWORD_REGEX.test(value)) {
+                    if (!passwordRegex.test(value)) {
                         throw new Error(
                             'Password must have at least one uppercase letter, one lowercase letter, one digit, one special character, and be at least 8 characters long.'
                         );
@@ -46,6 +45,12 @@ module.exports = (sequelize, DataTypes) => {
         },
         roleId: {
             type: DataTypes.INTEGER,
+        },
+        profileImage: {
+            type: DataTypes.STRING
+        },
+        isDeleted: {
+            type: DataTypes.BOOLEAN
         }
     },
         {

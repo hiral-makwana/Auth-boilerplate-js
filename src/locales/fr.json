@@ -25,7 +25,7 @@
 	"HTML_TO_STRING": "HTML converti en chaîne avec succès.",
 	"NOT_VERIFIED": "Utilisateur non vérifié.",
 	"IMAGE_NOT_SELECTED": "Aucune image de profil fournie.",
-	"IMAGE_FIELD_NOT_EXIST": "Champ \"ProfileImage\" non disponible dans le modèle utilisateur.",
+	"IMAGE_FIELD_NOT_EXIST": "Champ \"profileImage\" non disponible dans le modèle utilisateur.",
 	"IMAGE_UPLOADED": "Image de profil téléchargée avec succès.",
 	"CONFIG_UPDATED": "Configuration mise à jour avec succès.",
 	"CONFIG_NOT_UPDATE": "Erreur lors de la mise à jour de la configuration.",

@@ -25,7 +25,7 @@
 	"HTML_TO_STRING": "HTML converted to string successfully.",
 	"NOT_VERIFIED": "User not verified yet.",
 	"IMAGE_NOT_SELECTED": "No profile image provided.",
-	"IMAGE_FIELD_NOT_EXIST": "\"ProfileImage\" field not available in the User model.",
+	"IMAGE_FIELD_NOT_EXIST": "\"profileImage\" field not available in the User model.",
 	"IMAGE_UPLOADED": "Profile image uploaded successfully.",
 	"CONFIG_UPDATED": "Config updated successfully.",
 	"CONFIG_NOT_UPDATE": "Error while updating config.",

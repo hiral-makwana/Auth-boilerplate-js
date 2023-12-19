@@ -6,14 +6,6 @@
   "bin": {
     "auth-boilerplate-js": "src/index.js"
   },
-  "files": [
-    ".gitignore",
-    ".npmignore",
-    "src",
-    "index.js",
-    "package.json",
-    "package-lock.json"
-  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rmdir /s /q dist && tsc",

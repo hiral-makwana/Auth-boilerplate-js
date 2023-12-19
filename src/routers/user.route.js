@@ -2,9 +2,7 @@ const { Router } = require('express');
 const userController = require('../controller/user.controller');
 const userValidator = require('../validator/user.validator');
 const { verifyToken } = require('../middleware/verifyToken');
-const { createUploader } = require('../helper/mediaUpload');
-
-const upload = createUploader({ uploadFolder: process.env.UPLOAD_DIR });
+const upload = require('../helper/mediaUpload');
 const router = Router();
 
 /** Get all user's */
@@ -22,6 +20,6 @@ router.delete('/deleteUser/:userId', verifyToken, userController.deleteUser);
 router.post('/htmlToString', userController.convertHtmlToString);
 
 /**upload Profile */
-router.post('/upload/:userId', verifyToken, upload, userController.profileUpload);
+router.post('/upload/:userId', verifyToken, upload.single('avatar'), userController.profileUpload);
 
 module.exports = router;

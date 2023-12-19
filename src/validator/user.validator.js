@@ -1,5 +1,6 @@
 const { celebrate, Joi, Segments } = require('celebrate');
 const i18n = require('../helper/i18n');
+const { passwordRegex } = require('../helper/constant')
 
 const validateSchema = (schema) => {
     return async (req, res, next) => {
@@ -28,7 +29,7 @@ const validateSchema = (schema) => {
 exports.registerUser = () => validateSchema(Joi.object().keys({
     firstName: Joi.string().required().allow("", null),
     email: Joi.string().email().required(),
-    password: Joi.string().pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&+=!])(?!.*\s).{8,}$/)
+    password: Joi.string().pattern(passwordRegex)
         .message('Password must contain upper, lower, digit, 8+ chars.').required(),
     status: Joi.string(),
     isVerified: Joi.number(),
@@ -49,7 +50,7 @@ exports.forgotPw = () => validateSchema(Joi.object().keys({
 }))
 exports.resetPw = () => validateSchema(Joi.object().keys({
     email: Joi.string().email().required(),
-    password: Joi.string().pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&+=!])(?!.*\s).{8,}$/)
+    password: Joi.string().pattern(passwordRegex)
         .message('Password must contain upper, lower, digit, 8+ chars.').required()
 }))
 exports.login = () => validateSchema(Joi.object().keys({
@@ -58,17 +59,11 @@ exports.login = () => validateSchema(Joi.object().keys({
 }))
 exports.changePw = () => validateSchema(Joi.object().keys({
     oldPassword: Joi.string().required(),
-    newPassword: Joi.string().pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&+=!])(?!.*\s).{8,}$/)
+    newPassword: Joi.string().pattern(passwordRegex)
         .message('Password must contain upper, lower, digit, 8+ chars.').required()
 }))
 exports.checkValid = () => validateSchema(Joi.object().keys({
     value: Joi.any().required()
-}))
-exports.emailConfig = () => validateSchema(Joi.object().keys({
-    host: Joi.string().required(),
-    port: Joi.number().required(),
-    user: Joi.string().required(),
-    password: Joi.string().required()
 }))
 
 // Function to generate validation for custom fields dynamically
