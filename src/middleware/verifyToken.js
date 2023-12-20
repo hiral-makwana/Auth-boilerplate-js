@@ -16,6 +16,12 @@ function verifyToken(req, res, next) {
 
                 jwt.verify(token, config.JWT_SECRET, (err, decodedToken) => {
                     if (err) {
+                        if (err.name === 'TokenExpiredError') {
+                            return res.status(401).json({
+                                status: false,
+                                message: res.__("TOKEN_EXPIRED"),
+                            });
+                        }
                         return res.status(401).json({
                             status: false,
                             message: res.__("INVALID_TOKEN"),

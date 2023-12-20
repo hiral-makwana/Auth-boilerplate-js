@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rmdir /s /q dist && tsc",
-    "start:dev": "nodemon"
+    "start": "nodemon"
   },
   "repository": {
     "type": "git",

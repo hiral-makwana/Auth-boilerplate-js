@@ -32,5 +32,5 @@
 	"TEMPLATE_NOT_DEFINE": "Veuillez fournir un modèle HTML personnalisé.",
 	"HTML_CONVERTED": "HTML converti en chaîne avec succès.",
 	"HTML_REQUIRED": "Le contenu HTML est requis.",
-	"SUCCESS_FETCHED": "SUCCESS_FETCHED"
+	"TOKEN_EXPIRED": "Le jeton JSON a expiré."
 }

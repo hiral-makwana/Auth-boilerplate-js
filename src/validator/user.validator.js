@@ -1,6 +1,6 @@
 const { celebrate, Joi, Segments } = require('celebrate');
 const i18n = require('../helper/i18n');
-const { passwordRegex } = require('../helper/constant')
+const { passwordRegex } = require('../helper/constant');
 
 const validateSchema = (schema) => {
     return async (req, res, next) => {
@@ -65,21 +65,3 @@ exports.changePw = () => validateSchema(Joi.object().keys({
 exports.checkValid = () => validateSchema(Joi.object().keys({
     value: Joi.any().required()
 }))
-
-// Function to generate validation for custom fields dynamically
-function generateCustomFieldValidations(customFields) {
-    const customValidations = {};
-    if (customFields) {
-        for (const [fieldName, type] of Object.entries(customFields)) {
-            // Assert 'type' to a string before using it as an index
-            if (typeof type === 'string' && Joi[type.toLowerCase()]) {
-                customValidations[fieldName] = Joi[type.toLowerCase()]().required();
-            }
-            else {
-                // Handle invalid 'type' here
-                console.error(`Invalid validation type '${type}' for field '${fieldName}'`);
-            }
-        }
-    }
-    return customValidations;
-}

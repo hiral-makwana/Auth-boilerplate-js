@@ -1,6 +1,7 @@
-const { User, UserMeta } = require('../models');
+const { User } = require('../models/user.model');
+const { UserMeta } = require('../models/userMeta.model');
 const bcrypt = require('bcrypt');
-const { sendEmail, updateEmailConfig } = require('../helper/emailConfig');
+const { sendEmail } = require('../helper/emailConfig');
 const { keyName, requestType } = require("../helper/constant");
 const { generateRandomOtp, generateHash, generateOtpHtmlMessage } = require('../helper/utils');
 const { status } = require('../helper/constant');
@@ -14,9 +15,6 @@ const resendOtpTemplatePath = path.join('src/email_templates', 'resendOtpTemplat
 
 /**
 * @swagger
-* tags:
-*   name: Users
-*   description: User APIs
 * /list:
 *   get:
 *     summary: Get a list of users
@@ -56,7 +54,7 @@ exports.getListOfUser = async (req, res) => {
         return res.status(200).send({ status: true, message: res.__("SUCCESS_FETCHED"), data: allData });
     } catch (e) {
         console.log(e);
-        return res.status(400).send({ status: false, message: e.message });
+        return res.status(500).send({ status: false, message: res.__("SERVER_ERR", e.message) });
     }
 };
 /**
@@ -213,7 +211,7 @@ exports.verifyOTP = async (req, res) => {
         const user = await User.findOne({ where: { email }, raw: true });
 
         if (!user) {
-            return res.status(400).json({
+            return res.status(404).json({
                 status: false,
                 message: res.__("USER_NOT_FOUND"),
             });
@@ -307,7 +305,7 @@ exports.resendOTP = async (req, res) => {
         const user = await User.findOne({ where: { email } });
 
         if (!user) {
-            return res.status(400).json({
+            return res.status(404).json({
                 status: false,
                 message: res.__("USER_NOT_FOUND"),
             });
@@ -393,7 +391,7 @@ exports.forgotPassword = async (req, res) => {
         const user = await User.findOne({ where: { email } });
 
         if (!user) {
-            return res.status(400).json({
+            return res.status(404).json({
                 status: false,
                 message: res.__("USER_NOT_FOUND"),
             });
@@ -474,7 +472,7 @@ exports.resetPassword = async (req, res) => {
         const user = await User.findOne({ where: { email } });
 
         if (!user) {
-            return res.status(400).json({
+            return res.status(404).json({
                 status: false,
                 message: res.__("USER_NOT_FOUND"),
             });
@@ -654,7 +652,7 @@ exports.changePassword = async (req, res) => {
         const user = await User.findByPk(userId);
 
         if (!user) {
-            return res.status(401).json({
+            return res.status(404).json({
                 status: false,
                 message: res.__("USER_NOT_FOUND"),
             });
@@ -831,7 +829,7 @@ exports.deleteUser = async (req, res) => {
         const user = await User.findOne({ where: { id: userId } });
 
         if (!user) {
-            return res.status(400).json({
+            return res.status(404).json({
                 status: false,
                 message: res.__("USER_NOT_FOUND"),
             });
@@ -852,7 +850,7 @@ exports.deleteUser = async (req, res) => {
             if (softDeleteResult[0] === 1) {
                 return res.status(200).json({ status: true, message: res.__("USER_DELETED") });
             } else {
-                return res.status(400).json({ status: false, message: res.__("USER_NOT_FOUND") });
+                return res.status(404).json({ status: false, message: res.__("USER_NOT_FOUND") });
             }
         } else {
             const result = await User.destroy({ where: { id: userId } });
@@ -860,7 +858,7 @@ exports.deleteUser = async (req, res) => {
             if (result === 1) {
                 return res.status(200).json({ status: true, message: res.__("USER_DELETED") });
             } else {
-                return res.status(400).json({ status: false, message: res.__("USER_NOT_FOUND") });
+                return res.status(404).json({ status: false, message: res.__("USER_NOT_FOUND") });
             }
         }
     } catch (e) {

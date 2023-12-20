@@ -31,5 +31,6 @@
 	"CONFIG_NOT_UPDATE": "Fehler beim Aktualisieren der Konfiguration.",
 	"TEMPLATE_NOT_DEFINE": "Bitte geben Sie eine benutzerdefinierte HTML-Vorlage an.",
 	"HTML_CONVERTED": "HTML erfolgreich in Zeichenfolge umgewandelt.",
-	"HTML_REQUIRED": "HTML-Inhalt ist erforderlich."
+	"HTML_REQUIRED": "HTML-Inhalt ist erforderlich.",
+	"TOKEN_EXPIRED": "Das JSON-Token ist abgelaufen."
 }

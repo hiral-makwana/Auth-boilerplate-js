@@ -44,7 +44,7 @@ const handleErrorMessage = async (err, req, res, next) => {
             }
         }
     } catch (e) {
-        return res.status(400).send({ status: false, message: e.message });
+        return res.status(500).send({ status: false, message: e.message });
     }
 };
 
