@@ -12,7 +12,7 @@
    "API_BASE_PREFIX": "/",
    "BASE_URL": "localhost:7000",
    "HARD_DELETE": false,
-   "CUSTOM_TEMPLATE": true,
+   "CUSTOM_TEMPLATE": false,
    "UPLOAD_DIR": "src/pictures/",
    "SMTP": true,
    "mailConfig": {

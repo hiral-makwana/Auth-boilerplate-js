@@ -1,17 +1,16 @@
 /**
- * @file server.ts
+ * @file server.js
  * @description Main file for setting up the Express server and defining routes.
  */
-// import necessary modules: 'express', 'Sequelize', 'http', and functions from './index'
+// import necessary modules: 'express', 'Sequelize'
 const express = require('express');
-const http = require('http');
 const apiRoutes = require('./routers/index.route')
 const swaggerRoute = require('./routers/swaggerRoute')
 const config = require('./config/config.json');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const i18n = require('./helper/i18n');
-const handleErrorMessage = require('./middleware/validatorMessage');
+const i18n = require('./helper/locale.helper');
+const handleErrorMessage = require('./middleware/validate');
 const db = require('./models/index');
 
 db.sequelize.sync({ alter: true })
@@ -33,7 +32,7 @@ app.use('/', apiRoutes, swaggerRoute);
 
 //** Handle error message */
 app.use(handleErrorMessage)
-app.use('/src/pictures/', express.static(__dirname + '/pictures/'));
+app.use(config.UPLOAD_DIR, express.static(__dirname + '/pictures/'));
 
 // Define a simple root route
 app.get('/', (req, res) => {
@@ -43,11 +42,11 @@ app.get('/', (req, res) => {
     });
 });
 
-// Create an HTTP server using the Express app
-const server = http.createServer(app);
 
 // Start the server
 const port = config.PORT || 3000;
-server.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server is started on port:`, port);
 });
+
+module.exports = server;

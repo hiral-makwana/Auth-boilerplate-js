@@ -1,11 +1,10 @@
-const { User } = require('../models/user.model');
-const { UserMeta } = require('../models/userMeta.model');
+const { User, UserMeta } = require('../models');
 const bcrypt = require('bcrypt');
-const { sendEmail } = require('../helper/emailConfig');
+const { sendEmail } = require('../helper/email.helper');
 const { keyName, requestType } = require("../helper/constant");
 const { generateRandomOtp, generateHash, generateOtpHtmlMessage } = require('../helper/utils');
 const { status } = require('../helper/constant');
-const { generateToken } = require('../helper/jwtToken');
+const { generateToken } = require('../helper/auth.helper');
 const config = require('../config/config.json');
 const { Sequelize, Op } = require('sequelize');
 const path = require('path');
@@ -13,89 +12,15 @@ const path = require('path');
 const otpHtmlTemplatePath = path.join('src/email_templates', 'otpTemplate.html');
 const resendOtpTemplatePath = path.join('src/email_templates', 'resendOtpTemplate.html');
 
-/**
-* @swagger
-* /list:
-*   get:
-*     summary: Get a list of users
-*     tags: [User]
-*     security:
-*       - bearerAuth: []
-*     parameters:
-*       - in: header
-*         name: Accept-Language
-*         description: The preferred language for the response.
-*         required: false
-*         schema:
-*           type: string
-*     responses:
-*       200:
-*         description: Successful response with a list of users
-*         content:
-*           application/json:
-*             example:
-*               status: true
-*               message: Users fetched successfully
-*               data:
-*                 - userId: 1
-*                   username: user1
-*                 - userId: 2
-*                   username: user2
-*                 # Add more user objects as needed
-*       400:
-*         description: Bad request or error while fetching users
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: Error message describing the issue
-*/
 exports.getListOfUser = async (req, res) => {
     try {
-        let allData = await User.findAll({ where: { isDeleted: { [Op.or]: [null, 0] } } });
-        return res.status(200).send({ status: true, message: res.__("SUCCESS_FETCHED"), data: allData });
+        let getUsersData = await User.findAll({ where: { isDeleted: { [Op.or]: [null, 0] } } });
+        return res.status(200).send({ status: true, message: res.__("SUCCESS_FETCHED"), data: getUsersData });
     } catch (e) {
-        console.log(e);
         return res.status(500).send({ status: false, message: res.__("SERVER_ERR", e.message) });
     }
 };
-/**
- * @swagger
- * /register:
- *   post:
- *     summary: Register a new user
- *     tags: [Authentication] 
- *     parameters:
- *       - in: header
- *         name: Accept-Language
- *         description: The preferred language for the response.
- *         required: false
- *         schema:
- *           type: string
- *     requestBody:
- *       description: User registration data
- *       required: true
- *       content:
- *         application/json:
- *           example:
- *             messages:
- *               email: "invalid email format"
- *               required: "email is required"
- *             firstName: "Test"
- *             lastName: "User"
- *             email: "user@example.com"
- *             password: "String@123"
- *             phoneNumber: "8965613143"
- *             roleId: 1
- *     responses:
- *       200:
- *         description: Successful response with registration status
- *         content:
- *           application/json:
- *             example:
- *               status: true
- *               message: Registartion successfully.
- */
+
 exports.registerUser = async (req, res) => {
     try {
         const reqData = req.body;
@@ -144,7 +69,7 @@ exports.registerUser = async (req, res) => {
 
                 return res.status(200).send({ status: true, message: res.__("SUCCESS_CREATE") });
             } else {
-                return res.send({ status: false, message: res.__("FAIL_CREATE") });
+                return res.status(500).send({ status: false, message: res.__("FAIL_CREATE") });
             }
         }
     } catch (e) {
@@ -152,53 +77,7 @@ exports.registerUser = async (req, res) => {
         return res.status(500).send({ status: false, message: res.__("SERVER_ERR", e.message) });
     }
 };
-/**
-* @swagger
-* /verifyOTP:
-*   post:
-*     summary: Verify OTP for user registration
-*     tags: [Authentication]
-*     parameters:
-*       - in: header
-*         name: Accept-Language
-*         description: The preferred language for the response.
-*         required: false
-*         schema:
-*           type: string
-*     requestBody:
-*       description: OTP verification data
-*       required: true
-*       content:
-*         application/json:
-*           example:
-*             type: register
-*             email: john.doe@example.com
-*             otp: 123456
-*     responses:
-*       200:
-*         description: Successful response with verification status
-*         content:
-*           application/json:
-*             example:
-*               status: true
-*               message: "Otp is verfied successfully."
-*               isVerified: true
-*               loginType: register
-*       400:
-*         description: Invalid request or OTP verification failed
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: INVALID_TYPE 'register'
-*       500:
-*         description: Internal server error
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: Internal server error.
-*/
+
 exports.verifyOTP = async (req, res) => {
     try {
         const { type, email, otp } = req.body;
@@ -218,13 +97,6 @@ exports.verifyOTP = async (req, res) => {
                 message: res.__("USER_NOT_FOUND"),
             });
         }
-        if (user && user.status == status.ACTIVE) {
-            return res.status(400).json({
-                status: false,
-                message: res.__("ALREADY_VERIFIED"),
-            });
-        }
-
         const userMeta = await UserMeta.findOne({ where: { userId: user.id, key: keyName } });
         if (!userMeta || userMeta.value !== otp.toString()) {
             return res.status(400).json({
@@ -242,57 +114,13 @@ exports.verifyOTP = async (req, res) => {
             loginType: requestType.REGISTER,
         });
     } catch (e) {
-        console.error(e);
         return res.status(500).json({
             status: false,
             message: res.__("SERVER_ERR") + e.message,
         });
     }
 };
-/**
-* @swagger
-* /resendOTP:
-*   post:
-*     summary: Resend OTP for user registration
-*     tags: [Authentication]
-*     parameters:
-*       - in: header
-*         name: Accept-Language
-*         description: The preferred language for the response.
-*         required: false
-*         schema:
-*           type: string
-*     requestBody:
-*       description: Resend OTP data
-*       required: true
-*       content:
-*         application/json:
-*           example:
-*             type: forgot
-*             email: john.doe@example.com
-*     responses:
-*       200:
-*         description: Successful response with OTP resend status
-*         content:
-*           application/json:
-*             example:
-*               status: true
-*               message: OTP sent successfully.
-*       400:
-*         description: Invalid request or user not found
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: INVALID_TYPE 'forgot'
-*       500:
-*         description: Internal server error
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: Internal server error.
-*/
+
 exports.resendOTP = async (req, res) => {
     try {
         const { type, email, customOtpHtmlTemplate } = req.body;
@@ -336,56 +164,13 @@ exports.resendOTP = async (req, res) => {
             message: res.__("SENT_OTP"),
         });
     } catch (e) {
-        console.error(e);
         return res.status(500).json({
             status: false,
             message: res.__("SERVER_ERR") + e.message,
         });
     }
 };
-/**
-* @swagger
-* /forgotPassword:
-*   post:
-*     summary: Send OTP for password reset
-*     tags: [Authentication]
-*     parameters:
-*       - in: header
-*         name: Accept-Language
-*         description: The preferred language for the response.
-*         required: false
-*         schema:
-*           type: string
-*     requestBody:
-*       description: Email for password reset OTP
-*       required: true
-*       content:
-*         application/json:
-*           example:
-*             email: john.doe@example.com
-*     responses:
-*       200:
-*         description: Successful response with OTP sent status
-*         content:
-*           application/json:
-*             example:
-*               status: true
-*               message: OTP sent successfully.
-*       400:
-*         description: Invalid request or user not found
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: User not found.
-*       500:
-*         description: Internal server error
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: Internal server error.
-*/
+
 exports.forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -413,60 +198,13 @@ exports.forgotPassword = async (req, res) => {
             message: res.__("SENT_OTP"),
         });
     } catch (e) {
-        console.error(e);
         return res.status(500).json({
             status: false,
             message: res.__("SERVER_ERR") + e.message,
         });
     }
 };
-/**
-* @swagger
-* /resetPassword:
-*   post:
-*     summary: Reset user password
-*     tags: [Authentication]
-*     parameters:
-*       - in: header
-*         name: Accept-Language
-*         description: The preferred language for the response.
-*         required: false
-*         schema:
-*           type: string
-*     requestBody:
-*       description: User email and new password
-*       required: true
-*       content:
-*         application/json:
-*           example:
-*             email: john.doe@example.com
-*             password: newPassword123
-*     responses:
-*       200:
-*         description: Successful response with password reset status
-*         content:
-*           application/json:
-*             example:
-*               status: true
-*               message: Password reset successfully.
-*               data:
-*                 userId: 123
-*                 email: john.doe@example.com
-*       400:
-*         description: Invalid request or user not found
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: User not found.
-*       500:
-*         description: Internal server error
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: Internal server error.
-*/
+
 exports.resetPassword = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -496,61 +234,13 @@ exports.resetPassword = async (req, res) => {
             },
         });
     } catch (e) {
-        console.error(e);
         return res.status(500).json({
             status: false,
             message: res.__("SERVER_ERR") + e.message,
         });
     }
 };
-/**
- * @swagger
- * /login:
- *   post:
- *     summary: User login
- *     tags: [User]
- *     parameters:
- *       - in: header
- *         name: Accept-Language
- *         description: The preferred language for the response.
- *         required: false
- *         schema:
- *           type: string
- *     requestBody:
- *       description: User email and password
- *       required: true
- *       content:
- *         application/json:
- *           example:
- *             email: john.doe@example.com
- *             password: userPassword123
- *     responses:
- *       200:
- *         description: Successful login response with user information and token
- *         content:
- *           application/json:
- *             example:
- *               status: true
- *               message: Login successfully.
- *               data:
- *                 userId: 123
- *                 email: john.doe@example.com
- *                 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIzLCJlbWFpbCI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
- *       401:
- *         description: Invalid email or password
- *         content:
- *           application/json:
- *             example:
- *               status: false
- *               message: Invalid email or password
- *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             example:
- *               status: false
- *               message: Internal server error.
- */
+
 exports.logIn = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -593,59 +283,13 @@ exports.logIn = async (req, res) => {
             },
         });
     } catch (e) {
-        console.error(e);
         return res.status(500).json({
             status: false,
             message: res.__("SERVER_ERR") + e.message,
         });
     }
 };
-/**
-* @swagger
-* /changePassword:
-*   post:
-*     summary: Change user password after login
-*     tags: [User]
-*     parameters:
-*       - in: header
-*         name: Accept-Language
-*         description: The preferred language for the response.
-*         required: false
-*         schema:
-*           type: string
-*     security:
-*       - bearerAuth: []
-*     requestBody:
-*       description: Old and new password
-*       required: true
-*       content:
-*         application/json:
-*           example:
-*             oldPassword: userPassword123
-*             newPassword: newPassword123
-*     responses:
-*       200:
-*         description: Password change successful
-*         content:
-*           application/json:
-*             example:
-*               status: true
-*               message: Password change successfully.
-*       401:
-*         description: Invalid old password or new password matches the old password
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: Invalid or Match password.
-*       500:
-*         description: Internal server error
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: Internal server error.
-*/
+
 exports.changePassword = async (req, res) => {
     try {
         const { oldPassword, newPassword } = req.body;
@@ -687,59 +331,13 @@ exports.changePassword = async (req, res) => {
             message: res.__("CHANGE_PASSWORD"),
         });
     } catch (e) {
-        console.error(e);
         return res.status(500).json({
             status: false,
             message: res.__("SERVER_ERR") + e.message,
         });
     }
 };
-/**
-* @swagger
-* /checkValidation:
-*   post:
-*     summary: Check if a value exists in the database
-*     tags: [User]
-*     parameters:
-*       - in: header
-*         name: Accept-Language
-*         description: The preferred language for the response.
-*         required: false
-*         schema:
-*           type: string
-*     security:
-*       - bearerAuth: []
-*     requestBody:
-*       description: Validation data
-*       required: true
-*       content:
-*         application/json:
-*           example:
-*             key: email
-*             value: john.doe@example.com
-*     responses:
-*       200:
-*         description: Validation successful
-*         content:
-*           application/json:
-*             example:
-*               status: true
-*               message: Validation successful
-*       400:
-*         description: Validation failed
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: Value already exists in the database
-*       500:
-*         description: Server error
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: Server error message
-*/
+
 exports.checkValidation = async (req, res) => {
     try {
         const { key, value } = req.body;
@@ -768,67 +366,13 @@ exports.checkValidation = async (req, res) => {
 
         return res.status(200).json({ status: true, message: res.__("VALIDATION_OK") });
     } catch (e) {
-        console.error(e);
         return res.status(500).json({
             status: false,
             message: res.__("SERVER_ERR") + e.message,
         });
     }
 };
-/**
-* @swagger
-* tags:
-*   name: Authentication
-*   description: Authentication APIs
-* /deleteUser/{userId}:
-*   delete:
-*     summary: Delete a user by ID
-*     tags: [User]
-*     security:
-*       - bearerAuth: []
-*     parameters:
-*       - in: header
-*         name: Accept-Language
-*         description: The preferred language for the response.
-*         required: false
-*         schema:
-*           type: string
-*       - in: path
-*         name: userId
-*         required: true
-*         description: ID of the user to be deleted
-*         schema:
-*           type: integer
-*     responses:
-*       200:
-*         description: User deleted successfully
-*         content:
-*           application/json:
-*             example:
-*               status: true
-*               message: User deleted successfully
-*       400:
-*         description: User not found
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: User not found
-*       404:
-*         description: User not found
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: User not found
-*       500:
-*         description: Server error
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: Server error message
-*/
+
 exports.deleteUser = async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -868,73 +412,13 @@ exports.deleteUser = async (req, res) => {
             }
         }
     } catch (e) {
-        console.error(e);
         return res.status(500).json({
             status: false,
             message: res.__("SERVER_ERR") + e.message,
         });
     }
 };
-/**
-* @swagger
-* tags:
-*   name: User
-*   description: User-related APIs
-* /profile-upload/{userId}:
-*   post:
-*     summary: Upload profile image for a user
-*     tags: [User]
-*     parameters:
-*       - in: path
-*         name: userId
-*         description: ID of the user
-*         required: true
-*         schema:
-*           type: integer
-*     security:
-*       - bearerAuth: []
-*     requestBody:
-*       description: Profile image to upload
-*       required: true
-*       content:
-*         multipart/form-data:
-*           schema:
-*             type: object
-*             properties:
-*               profileImage:
-*                 type: string
-*                 format: binary
-*     responses:
-*       200:
-*         description: Successful response with profile image details
-*         content:
-*           application/json:
-*             example:
-*               status: true
-*               message: Profile image uploaded successfully
-*               data: http://example.com/uploads/user123_profile.jpg
-*       400:
-*         description: Bad request or image not selected
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: Image not selected
-*       404:
-*         description: User not found
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: User not found
-*       500:
-*         description: Internal server error
-*         content:
-*           application/json:
-*             example:
-*               status: false
-*               message: Server error during image upload
-*/
+
 exports.profileUpload = async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -957,120 +441,13 @@ exports.profileUpload = async (req, res) => {
         }
         return res.status(200).json({ status: true, message: res.__('IMAGE_UPLOADED'), data: config.BASE_URL + `/${profileImage.destination}` + profileImage.filename });
     } catch (e) {
-        console.error(e);
         return res.status(500).json({
             status: false,
             message: res.__("SERVER_ERR") + e.message,
         });
     }
 };
-// /**
-//  * @swagger
-//  * tags:
-//  *   name: Config
-//  *   description: Email Configuration
-//  * /updateEmailConfig:
-//  *   put:
-//  *     summary: Update email configuration
-//  *     tags: [Config]
-//  *     parameters:
-//  *       - in: header
-//  *         name: Accept-Language
-//  *         description: The preferred language for the response.
-//  *         required: false
-//  *         schema:
-//  *           type: string
-//  *     requestBody:
-//  *       description: New configuration data
-//  *       required: true
-//  *       content:
-//  *         application/json:
-//  *           example:
-//  *             host: smtp.example.com
-//  *             port: 587
-//  *             user: your_username
-//  *             pass: your_password
-//  *     responses:
-//  *       200:
-//  *         description: Successful response with update status
-//  *         content:
-//  *           application/json:
-//  *             example:
-//  *               success: true
-//  *               message: Config updated successfully
-//  *       500:
-//  *         description: Internal server error
-//  *         content:
-//  *           application/json:
-//  *             example:
-//  *               success: false
-//  *               message: Error updating config
-//  */
-// export const updateConfig = async (req: any, res: any) => {
-//     try {
-//         const newConfig = req.body;
 
-//         const result = updateEmailConfig(newConfig);
-
-//         if (result.status == true) {
-//             res.status(200).json({ success: true, message: result.message });
-//         } else {
-//             res.status(500).json({ success: false, message: result.message });
-//         }
-//     } catch (e) {
-//         console.error(e);
-//         return res.status(500).json({
-//             status: false,
-//             message: res.__("SERVER_ERR") + e.message,
-//         });
-//     }
-// }
-/**
- * @swagger
- * tags:
- *   name: HTML
- *   description: HTML Conversion APIs
- * /htmlToString:
- *   post:
- *     summary: Convert HTML to string
- *     tags: [HTML]
- *     parameters:
- *       - in: header
- *         name: Accept-Language
- *         description: The preferred language for the response.
- *         required: false
- *         schema:
- *           type: string
- *     requestBody:
- *       description: HTML content to be converted
- *       required: true
- *       content:
- *         text/html:
- *           example: "<html><body><h1>Hello, World!</h1></body></html>"
- *     responses:
- *       200:
- *         description: Successful response with converted text
- *         content:
- *           application/json:
- *             example:
- *               success: true
- *               message: HTML converted successfully
- *               data: "<html><body><h1>Hello, World!</h1></body></html>"
- *       400:
- *         description: Bad request, HTML content is required
- *         content:
- *           application/json:
- *             example:
- *               success: false
- *               message: HTML content is required.
- *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             example:
- *               success: false
- *               message: Server error while converting HTML
- */
 exports.convertHtmlToString = async (req, res) => {
     try {
         let htmlData = '';
@@ -1090,7 +467,6 @@ exports.convertHtmlToString = async (req, res) => {
             res.status(200).json({ success: false, message: 'Invalid content type (Expected text/html). Select HTML for request.' });
         }
     } catch (e) {
-        console.error(e);
         return res.status(500).json({
             status: false,
             message: res.__("SERVER_ERR") + e.message,

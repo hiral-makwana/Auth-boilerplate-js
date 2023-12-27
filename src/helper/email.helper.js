@@ -1,7 +1,6 @@
-const fs = require('fs');
 const nodemailer = require('nodemailer');
 const config = require('../config/config.json');
-const path = require('path');
+
 let emailConfig = null;
 
 /**
@@ -15,41 +14,6 @@ emailConfig = {
         pass: config.mailConfig && config.mailConfig.password ? config.mailConfig.password : null,
     }
 };
-
-/**
- * Update the email configuration dynamically.
- * @param {Object} newConfig - Email configuration object.
- */
-function updateEmailConfig(newConfig) {
-    const configPath = path.join('src', 'config.json');
-    console.log(configPath);
-    try {
-        if (!fs.existsSync(configPath)) {
-            return { status: false, message: 'Config file not found.' };
-        }
-
-        const configFileContent = fs.readFileSync(configPath, 'utf-8');
-        const currentConfig = JSON.parse(configFileContent);
-
-        if (!currentConfig.mailConfig) {
-            return { status: false, message: 'mailConfig object not found in the config file.' };
-        }
-
-        currentConfig.mailConfig.host = newConfig.host;
-        currentConfig.mailConfig.port = newConfig.port;
-        currentConfig.mailConfig.user = newConfig.user;
-        currentConfig.mailConfig.password = newConfig.password;
-
-        const updatedConfigContent = JSON.stringify(currentConfig, null, 2);
-
-        fs.writeFileSync(configPath, updatedConfigContent, 'utf-8');
-
-        return { status: true, message: 'Config updated successfully!' };
-    } catch (error) {
-        console.error('Error updating config:', error);
-        throw new Error(error);
-    }
-}
 
 /**
  * Send an email using the configured email settings.
@@ -96,6 +60,5 @@ function sendEmail(to, subject, message) {
 }
 
 module.exports = {
-    updateEmailConfig,
     sendEmail,
 };

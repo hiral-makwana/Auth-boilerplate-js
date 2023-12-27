@@ -1,63 +1,82 @@
 #!/usr/bin/env node
 
+const fs = require("fs");
+const path = require("path");
+const inquirer = require("inquirer");
 const { execSync } = require('child_process');
-const path = require('path');
-const fs = require('fs');
+const { createReadme } = require('./bin/readme')
 
-
-if (process.argv.length < 3) {
-    console.log('You have to provide a name to your app.');
-    console.log('For example :');
-    console.log('    npx create-my-boilerplate my-app');
-    process.exit(1);
-}
-
-
-//The first argument will be the project name.
+// The first argument will be the project name.
 const projectName = process.argv[2];
 
 // Create a project directory with the project name.
 const currentDir = process.cwd();
 
 const projectDir = path.resolve(currentDir, projectName);
-try {
-    fs.mkdirSync(projectDir);
-} catch (err) {
-    if (err.code === 'EEXIST') {
-        console.log(`The file ${projectName} already exist in the current directory, please give it another name.`);
-    } else {
-        console.log(err);
+fs.mkdirSync(projectDir, { recursive: true });
+
+// Prompts
+const questions = [
+    {
+        type: "input",
+        name: "name",
+        message: "Name of the project",
+        validate: (name) => typeof name === "string",
+    },
+    {
+        type: "input",
+        name: "author",
+        message: "Name of the author",
+        validate: (name) => typeof name === "string",
+    },
+    {
+        type: "input",
+        name: "description",
+        message: "Description",
+        validate: (name) => typeof name === "string",
     }
-    process.exit(1);
+];
+
+async function packagePrompts() {
+    return await inquirer.prompt(questions);
 }
 
-async function main() {
-    try {
-        console.log('Downloading files...');
-        const templateDir = path.resolve(__dirname, "../");
-        fs.cpSync(templateDir, projectDir, { recursive: true });
+async function run() {
+    const answers = await packagePrompts();
 
-        process.chdir(projectDir);
+    const templateDir = path.resolve(__dirname, "../");
+    fs.cpSync(templateDir, projectDir, { recursive: true });
+    process.chdir(projectDir);
+    execSync('npm install');
 
-        console.log('Installing dependencies...');
-        execSync('npm install');
+    const filesToDelete = ['src/index.js', '.npmignore'];
+    console.log('Removing useless files');
+    execSync('npx rimraf ./.git');
+    filesToDelete.forEach((file) => {
+        const filePath = path.join(projectDir, file);
 
-        const filesToDelete = ['src/index.js', '.npmignore'];
-        console.log('Removing useless files');
-        execSync('npx rimraf ./.git');
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                console.error(`Error deleting ${filePath}: ${err.message}`);
+            }
+        });
+    });
 
-        filesToDelete.forEach((file) => {
-            const filePath = path.join(projectDir, file);
-        
-            fs.unlink(filePath, (err) => {
-                if (err) {
-                    console.error(`Error deleting ${filePath}: ${err.message}`);
-                }
-            });
-        });        
-        console.log('.\n.\nThe installation is done, this is ready to use !');
-    } catch (error) {
-        console.log(error);
-    }
+    // Read the existing package.json file
+    const packageJsonPath = path.join(projectDir, "package.json");
+    const existingPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+    // Update the properties with answers
+    existingPackageJson.name = answers.name;
+    existingPackageJson.author = answers.author;
+    existingPackageJson.description = answers.description;
+    existingPackageJson.version = "1.0.0";
+    // Write the updated package.json file
+    fs.writeFileSync(packageJsonPath, JSON.stringify(existingPackageJson, null, 2));
+
+    await createReadme(answers, projectDir)
+    console.log("Success! Your new project is ready.");
+    console.log(`Created ${projectName} at ${projectDir}`);
 }
-main();
+
+// Make sure to call the asynchronous run function
+run();

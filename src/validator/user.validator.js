@@ -1,5 +1,5 @@
 const { celebrate, Joi, Segments } = require('celebrate');
-const i18n = require('../helper/i18n');
+const i18n = require('../helper/locale.helper');
 const { passwordRegex } = require('../helper/constant');
 
 const validateSchema = (schema) => {
@@ -30,7 +30,7 @@ exports.registerUser = () => validateSchema(Joi.object().keys({
     firstName: Joi.string().required().allow("", null),
     email: Joi.string().email().required(),
     password: Joi.string().pattern(passwordRegex)
-        .message('Password must contain upper, lower, digit, 8+ chars.').required(),
+        .message('Password should include at least one uppercase letter, one lowercase letter, one digit, and be at least 8 characters long.').required(),
     status: Joi.string(),
     isVerified: Joi.number(),
     roleId: Joi.number()
@@ -45,23 +45,23 @@ exports.resendOTP = () => validateSchema(Joi.object().keys({
     type: Joi.string(),
     email: Joi.string().email().required()
 }))
-exports.forgotPw = () => validateSchema(Joi.object().keys({
+exports.forgotPassword = () => validateSchema(Joi.object().keys({
     email: Joi.string().email().required()
 }))
-exports.resetPw = () => validateSchema(Joi.object().keys({
+exports.resetPassword = () => validateSchema(Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().pattern(passwordRegex)
-        .message('Password must contain upper, lower, digit, 8+ chars.').required()
+        .message('Password should include at least one uppercase letter, one lowercase letter, one digit, and be at least 8 characters long.').required()
 }))
 exports.login = () => validateSchema(Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().required()
 }))
-exports.changePw = () => validateSchema(Joi.object().keys({
+exports.changePassword = () => validateSchema(Joi.object().keys({
     oldPassword: Joi.string().required(),
     newPassword: Joi.string().pattern(passwordRegex)
-        .message('Password must contain upper, lower, digit, 8+ chars.').required()
+        .message('Password should include at least one uppercase letter, one lowercase letter, one digit, and be at least 8 characters long.').required()
 }))
-exports.checkValid = () => validateSchema(Joi.object().keys({
+exports.checkValidation = () => validateSchema(Joi.object().keys({
     value: Joi.any().required()
 }))

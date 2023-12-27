@@ -2,39 +2,8 @@ const { Joi } = require('celebrate');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 const handlebars = require('handlebars');
-const { sendEmail } = require('../helper/emailConfig');
+const { sendEmail } = require('../helper/email.helper');
 
-const dynamicFieldFunction = (customFields, validate) => {
-    return Object.entries(customFields || {}).map(([fieldName, fieldType]) => {
-        if (Joi.isSchema(fieldType)) {
-            return { [fieldName]: fieldType };
-        }
-
-        let schema;
-        // Create schema based on field type
-        switch (String(fieldType).toUpperCase()) {
-            case 'STRING':
-                schema = Joi.string().allow(null, '');
-                break;
-            case 'INTEGER':
-                schema = Joi.number().integer().allow(null);
-                break;
-            case 'BOOLEAN':
-                schema = Joi.boolean();
-                break;
-            case 'ARRAY':
-                schema = Joi.array().items(Joi.any()).allow(null);
-                break;
-            case 'DATE':
-                schema = Joi.date().allow(null, '');
-                break;
-            default:
-                throw new Error(`Unsupported field type: ${fieldType}`);
-        }
-
-        return { [fieldName]: validate ? schema.required() : schema };
-    });
-};
 
 const generateRandomOtp = async (n) => {
     if (n <= 0) return 0;
@@ -99,7 +68,6 @@ function convertHtmlToString(html) {
 }
 
 module.exports = {
-    dynamicFieldFunction,
     generateRandomOtp,
     generateHash,
     generateOtpHtmlMessage,

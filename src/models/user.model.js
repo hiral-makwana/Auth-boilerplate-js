@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
                 isStrongPassword(value) {
                     if (!passwordRegex.test(value)) {
                         throw new Error(
-                            'Password must have at least one uppercase letter, one lowercase letter, one digit, one special character, and be at least 8 characters long.'
+                            'Password should include at least one uppercase letter, one lowercase letter, one digit, and be at least 8 characters long.'
                         );
                     }
                 },
