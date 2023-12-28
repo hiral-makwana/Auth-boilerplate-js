@@ -10,7 +10,7 @@ const validateSchema = (schema) => {
         try {
             let messages;
             // Dynamically load messages based on the selected language
-            messages = await require(`../messages/${language}`);
+            messages = await require(`./messages/${language}`);
             celebrate({ [Segments.BODY]: schema }, {
                 abortEarly: false,
                 messages: messages.default || {},

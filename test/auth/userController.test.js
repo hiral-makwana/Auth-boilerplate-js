@@ -2,13 +2,13 @@
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const app = require('../src/server');
+const app = require('../../src/server');
 const sinon = require('sinon');
-const { User, UserMeta } = require('../src/models/index');
-const utils = require('../src/helper/utils');
-const { generateRandomOtp, generateHash } = require('../src/helper/utils');
-const { sendEmail } = require('../src/helper/emailConfig');
-const { generateToken } = require('../src/helper/jwtToken');
+const { User, UserMeta } = require('../../src/models/index');
+const utils = require('../../src/helper/utils');
+const { generateRandomOtp, generateHash } = require('../../src/helper/utils');
+const { sendEmail } = require('../../src/helper/email.helper');
+const { generateToken } = require('../../src/helper/auth.helper');
 const bcrypt = require('bcrypt');
 chai.use(chaiHttp);
 const { expect } = chai;

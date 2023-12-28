@@ -1,4 +1,4 @@
-const enMessagesJSON = require('../../locales/en.json');
+const enMessagesJSON = require('../../../locales/en.json');
 
 const en = {
     ...enMessagesJSON,

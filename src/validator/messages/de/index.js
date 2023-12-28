@@ -9,9 +9,9 @@ const keys = require('./keys');
 const number = require('./number');
 const string = require('./string');
 const symbol = require('./symbol');
-const frMessagesJSON = require('../../locales/fr.json');
+const deMessagesJSON = require('../../../locales/de.json');
 
-const fr = {
+const de = {
     ...alternatives,
     ...any,
     ...arrays,
@@ -23,7 +23,7 @@ const fr = {
     ...number,
     ...string,
     ...symbol,
-    ...frMessagesJSON,
+    ...deMessagesJSON,
 };
 
-module.exports = fr;
+module.exports = de;
