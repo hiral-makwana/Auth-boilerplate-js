@@ -1,5 +1,5 @@
 {
-  "name": "auth-boilerplate-js",
+  "name": "NodeAuthBase-JS",
   "version": "1.0.3",
   "description": "",
   "main": "src/server.js",
@@ -11,10 +11,7 @@
     "start": "nodemon",
     "test": "mocha"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hiral-makwana/auth-boilerplate-js.git"
-  },
+  
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
