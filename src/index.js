@@ -47,11 +47,14 @@ async function run() {
     const templateDir = path.resolve(__dirname, "../");
     fs.cpSync(templateDir, projectDir, { recursive: true });
     process.chdir(projectDir);
+    
+    console.log('Installing dependencies...');
     execSync('npm install');
-
-    const filesToDelete = ['src/index.js', '.npmignore'];
+    
+    const filesToDelete = ['src/index.js', '.npmignore', 'src/bin/readme.js'];
     console.log('Removing useless files');
-    execSync('npx rimraf ./.git');
+
+    // Delete individual files
     filesToDelete.forEach((file) => {
         const filePath = path.join(projectDir, file);
 
@@ -62,6 +65,12 @@ async function run() {
         });
     });
 
+    // Remove the 'src/bin' directory
+    const binDirPath = path.join(projectDir, 'src/bin');
+    fs.rmSync(binDirPath, { recursive: true });
+
+    // Remove the '.git' directory
+    execSync('npx rimraf ./.git');
     // Read the existing package.json file
     const packageJsonPath = path.join(projectDir, "package.json");
     const existingPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
@@ -75,7 +84,6 @@ async function run() {
 
     await createReadme(answers, projectDir)
     console.log("Success! Your new project is ready.");
-    console.log(`Created ${projectName} at ${projectDir}`);
 }
 
 // Make sure to call the asynchronous run function
