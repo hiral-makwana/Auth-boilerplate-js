@@ -1,10 +1,10 @@
 {
   "name": "node-auth-base-js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "src/server.js",
   "bin": {
-    "auth-boilerplate-js": "src/index.js"
+    "auth-boilerplate-js": "src/bin/index.js"
   },
   "scripts": {
     "build": "rmdir /s /q dist && tsc",
