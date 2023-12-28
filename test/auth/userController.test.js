@@ -746,9 +746,9 @@ describe('User Controller', () => {
     it('should get list of users successfully', async () => {
         // Stub User.findAll to simulate fetching user data
         const findAllStub = sandbox.stub(User, 'findAll').resolves([
-            { id: 1, name: 'User 1', isDeleted: false },
-            { id: 2, name: 'User 2', isDeleted: false },
-            { id: 3, name: 'User 3', isDeleted: false },
+            { id: 1, firstName: 'User 1', isDeleted: false },
+            { id: 2, firstName: 'User 2', isDeleted: false },
+            { id: 3, firstName: 'User 3', isDeleted: false },
         ]);
 
         // Perform the API request
