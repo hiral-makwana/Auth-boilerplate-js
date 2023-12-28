@@ -1,17 +1,17 @@
-# Auth-boilerplate-js
+# NodeAuthBase-JS
 
 An authentication library for Node.js simplifies the implementation of authentication-related functionalities in your Express applications. It provides tools for managing Sequelize models, creating Express routes, initializing email configurations, and Swagger documentation setup.
 
 ## Installation
 
 ```bash
-npx auth-boilerplate-js <project-name>
+npx NodeAuthBase-JS <project-name>
 ```
 ## Manual Installation
 Clone the repo: 
 ```bash
-git clone --depth 1 https://github.com/hiral-makwana/Auth-boilerplate-js.git
-cd Auth-boilerplate-js
+git clone --depth 1 https://github.com/hiral-makwana/NodeAuthBase-JS.git
+cd NodeAuthBase-JS
 npx rimraf ./.git
 ```
 ## Update environment variables
@@ -37,9 +37,9 @@ npm start
 
 ### 2. Expected result 
 #### 1. local server
-![result_1](https://raw.githubusercontent.com/hiral-makwana/Auth-boilerplate-js/auth-1.0/src/blob/result_1.png)
+![result_1](https://raw.githubusercontent.com/hiral-makwana/NodeAuthBase-JS/auth-1.0/src/blob/result_1.png)
 #### 2. Swagger APIs
-![result_2](https://raw.githubusercontent.com/hiral-makwana/Auth-boilerplate-js/auth-1.0/src/blob/result_2.png)
+![result_2](https://raw.githubusercontent.com/hiral-makwana/NodeAuthBase-JS/auth-1.0/src/blob/result_2.png)
 
 ## Additional Details
 #### Types of validations (Use to add custom error message for validation in APIs)
