@@ -1,6 +1,6 @@
 {
    "PORT": 7000,
-   "database": {
+   "DATABASE": {
       "host": "localhost",
       "dbName": "auth_apis",
       "dbUser": "root",
@@ -13,9 +13,9 @@
    "BASE_URL": "localhost:7000",
    "HARD_DELETE": false,
    "CUSTOM_TEMPLATE": false,
-   "UPLOAD_DIR": "src/pictures/",
+   "UPLOAD_DIR": "src/uploads/",
    "SMTP": true,
-   "mailConfig": {
+   "SMTP_CONFIG": {
       "host": "smtp.ethereal.email",
       "port": 587,
       "user": "oma.fisher43@ethereal.email",

@@ -7,11 +7,11 @@ let emailConfig = null;
  * Initialize the email configuration.
  */
 emailConfig = {
-    host: config.mailConfig && config.mailConfig.host ? config.mailConfig.host : 'localhost',
-    port: config.mailConfig && config.mailConfig.port ? config.mailConfig.port : 25,
+    host: config.SMTP_CONFIG && config.SMTP_CONFIG.host ? config.SMTP_CONFIG.host : 'localhost',
+    port: config.SMTP_CONFIG && config.SMTP_CONFIG.port ? config.SMTP_CONFIG.port : 25,
     auth: {
-        user: config.mailConfig && config.mailConfig.user ? config.mailConfig.user : null,
-        pass: config.mailConfig && config.mailConfig.password ? config.mailConfig.password : null,
+        user: config.SMTP_CONFIG && config.SMTP_CONFIG.user ? config.SMTP_CONFIG.user : null,
+        pass: config.SMTP_CONFIG && config.SMTP_CONFIG.password ? config.SMTP_CONFIG.password : null,
     }
 };
 
@@ -40,7 +40,7 @@ function sendEmail(to, subject, message) {
         }
         // Email data with HTML message
         const mailOptions = {
-            from: config.mailConfig.user,
+            from: config.SMTP_CONFIG.user,
             to: to,
             subject: subject,
             html: message

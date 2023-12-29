@@ -32,7 +32,7 @@ app.use('/', apiRoutes, swaggerRoute);
 
 //** Handle error message */
 app.use(handleErrorMessage)
-app.use(config.UPLOAD_DIR, express.static(__dirname + '/pictures/'));
+app.use(config.UPLOAD_DIR, express.static(__dirname + '/uploads/'));
 
 // Define a simple root route
 app.get('/', (req, res) => {

@@ -9,9 +9,9 @@ const basename = path.basename(__filename);
 const db = {};
 
 // Create a new Sequelize instance for database connection
-const sequelize = new Sequelize(config.database.dbName, config.database.dbUser, config.database.dbPassword, {
+const sequelize = new Sequelize(config.DATABASE.dbName, config.DATABASE.dbUser, config.DATABASE.dbPassword, {
     dialect: 'mysql',
-    host: config.database.host,
+    host: config.DATABASE.host,
     logging: false
 });
 
