@@ -62,54 +62,6 @@ module.exports = router;
 *               message: Error message describing the issue
 */
 /**
- * @swagger
- * /login:
- *   post:
- *     summary: User login
- *     tags: [User]
- *     parameters:
- *       - in: header
- *         name: Accept-Language
- *         description: The preferred language for the response.
- *         required: false
- *         schema:
- *           type: string
- *     requestBody:
- *       description: User email and password
- *       required: true
- *       content:
- *         application/json:
- *           example:
- *             email: john.doe@example.com
- *             password: userPassword123
- *     responses:
- *       200:
- *         description: Successful login response with user information and token
- *         content:
- *           application/json:
- *             example:
- *               status: true
- *               message: Login successfully.
- *               data:
- *                 userId: 123
- *                 email: john.doe@example.com
- *                 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIzLCJlbWFpbCI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
- *       401:
- *         description: Invalid email or password
- *         content:
- *           application/json:
- *             example:
- *               status: false
- *               message: Invalid email or password
- *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             example:
- *               status: false
- *               message: Internal server error.
- */
-/**
 * @swagger
 * /changePassword:
 *   post:
