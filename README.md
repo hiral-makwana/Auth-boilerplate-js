@@ -1,6 +1,6 @@
 # NodeAuthBase-JS
 
-An authentication library for Node.js simplifies the implementation of authentication-related functionalities in your Express applications. It provides tools for managing Sequelize models, creating Express routes, initializing email configurations, and Swagger documentation setup.
+NodeAuthBase-JS is an authentication library for Node.js that simplifies the implementation of authentication-related functionalities in your Express applications. It provides tools for managing Sequelize models, creating Express routes, initializing email configurations, and setting up Swagger documentation.
 
 ## Installation
 
@@ -176,7 +176,7 @@ To add custom email Template for `/register` and `/forgotPassword` APIs need to 
 }
 ```
 ## Custom Validation message
-To add custom validation message for any field add `messages` property into request data. For details of validations key check below `Additional Details`(#Additional Details)
+To add custom validation message for any field add `messages` property into request data. For details of validations key check below [Additional Details](#additional-details) section.
 
 ```json
 {
