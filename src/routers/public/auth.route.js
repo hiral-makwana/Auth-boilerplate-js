@@ -1,6 +1,6 @@
 const { Router } = require('express');
-const authController = require('../controller/auth.controller');
-const authValidator = require('../validator/auth.validator');
+const authController = require('../../controller/auth.controller');
+const authValidator = require('../../validator/auth.validator');
 
 const router = Router();
 
@@ -8,28 +8,28 @@ const router = Router();
 router.post('/register', authValidator.registerUser(), authController.registerUser);
 
 /**verify otp received in email */
-router.post('/verifyOtp', authValidator.verifyOTP(), authController.verifyOTP);
+router.post('/verify-otp', authValidator.verifyOTP(), authController.verifyOTP);
 
 /**Resend OTP on email */
-router.post('/resendOtp', authValidator.resendOTP(), authController.resendOTP);
+router.post('/resend-otp', authValidator.resendOTP(), authController.resendOTP);
 
 /**Forgot password using Email */
-router.post('/forgotPassword', authValidator.forgotPassword(), authController.forgotPassword);
+router.post('/forgot-password', authValidator.forgotPassword(), authController.forgotPassword);
 
 /**Reset password */
-router.post('/resetPassword', authValidator.resetPassword(), authController.resetPassword);
+router.post('/reset-password', authValidator.resetPassword(), authController.resetPassword);
 
 /** Login */
 router.post('/login', authValidator.login(), authController.logIn);
 
 /**Refresh token */
-router.post('/refreshToken', authValidator.refreshTokens(), authController.refreshToken);
+router.post('/refresh-token', authValidator.refreshTokens(), authController.refreshToken);
 
 module.exports = router;
 
 /**
  * @swagger
- * /register:
+ * /v1/public/register:
  *   post:
  *     summary: Register a new user
  *     tags: [Authentication] 
@@ -66,7 +66,7 @@ module.exports = router;
  */
 /**
 * @swagger
-* /verifyOTP:
+* /v1/public/verify-otp:
 *   post:
 *     summary: Verify OTP for user registration
 *     tags: [Authentication]
@@ -113,7 +113,7 @@ module.exports = router;
 */
 /**
 * @swagger
-* /resendOTP:
+* /v1/public/resend-otp:
 *   post:
 *     summary: Resend OTP for user registration
 *     tags: [Authentication]
@@ -157,7 +157,7 @@ module.exports = router;
 */
 /**
 * @swagger
-* /forgotPassword:
+* /v1/public/forgot-password:
 *   post:
 *     summary: Send OTP for password reset
 *     tags: [Authentication]
@@ -200,7 +200,7 @@ module.exports = router;
 */
 /**
 * @swagger
-* /resetPassword:
+* /v1/public/reset-password:
 *   post:
 *     summary: Reset user password
 *     tags: [Authentication]
@@ -247,7 +247,7 @@ module.exports = router;
 */
 /**
  * @swagger
- * /login:
+ * /v1/public/login:
  *   post:
  *     summary: User login
  *     tags: [Authentication]
@@ -298,7 +298,7 @@ module.exports = router;
  * tags:
  *   name: Authentication
  *   description: User authentication APIs
- * /refreshToken:
+ * /v1/public/refresh-token:
  *   post:
  *     summary: Refresh an authentication token
  *     tags: [Authentication]

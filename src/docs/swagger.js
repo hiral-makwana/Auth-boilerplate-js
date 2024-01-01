@@ -1,5 +1,4 @@
 const swaggerJsdoc = require('swagger-jsdoc');
-const config = require('../config/config.json');
 
 let definition;
 
@@ -21,10 +20,7 @@ definition = {
     },
     servers: [
         {
-            url: config.DEFAULT_ROUTE,
-        },
-        {
-            url: config.API_BASE_PREFIX,
+            url: global.config.API_BASE_PREFIX,
         },
     ],
 };

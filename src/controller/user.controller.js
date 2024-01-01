@@ -1,7 +1,6 @@
 const { User } = require('../models');
 const bcrypt = require('bcrypt');
 const { generateHash } = require('../helper/utils');
-const config = require('../config/config.json');
 const { Sequelize, Op } = require('sequelize');
 
 exports.getListOfUser = async (req, res) => {
@@ -9,6 +8,7 @@ exports.getListOfUser = async (req, res) => {
         let getUsersData = await User.findAll({ where: { isDeleted: { [Op.or]: [null, 0] } } });
         return res.status(200).send({ status: true, message: res.__("SUCCESS_FETCHED"), data: getUsersData });
     } catch (e) {
+        console.log(e);
         return res.status(500).send({ status: false, message: res.__("SERVER_ERR", e.message) });
     }
 };
@@ -54,6 +54,7 @@ exports.changePassword = async (req, res) => {
             message: res.__("CHANGE_PASSWORD"),
         });
     } catch (e) {
+        console.log(e);
         return res.status(500).json({
             status: false,
             message: res.__("SERVER_ERR") + e.message,
@@ -89,6 +90,7 @@ exports.checkValidation = async (req, res) => {
 
         return res.status(200).json({ status: true, message: res.__("VALIDATION_OK") });
     } catch (e) {
+        console.log(e);
         return res.status(500).json({
             status: false,
             message: res.__("SERVER_ERR") + e.message,
@@ -108,7 +110,7 @@ exports.deleteUser = async (req, res) => {
             });
         }
 
-        if (!config.HARD_DELETE) {
+        if (!global.config.HARD_DELETE) {
             const modelAttributes = Object.keys(User.getAttributes());
 
             if (!modelAttributes.includes('isDeleted')) {
@@ -135,6 +137,7 @@ exports.deleteUser = async (req, res) => {
             }
         }
     } catch (e) {
+        console.log(e);
         return res.status(500).json({
             status: false,
             message: res.__("SERVER_ERR") + e.message,
@@ -162,8 +165,9 @@ exports.profileUpload = async (req, res) => {
         if (updatedRows === 0) {
             return res.status(404).json({ status: false, message: res.__('USER_NOT_FOUND') });
         }
-        return res.status(200).json({ status: true, message: res.__('IMAGE_UPLOADED'), data: config.BASE_URL + `/${profileImage.destination}` + profileImage.filename });
+        return res.status(200).json({ status: true, message: res.__('IMAGE_UPLOADED'), data: global.config.API_BASE_URL + `${global.config.PORT}` + `/${profileImage.destination}` + profileImage.filename });
     } catch (e) {
+        console.log(e);
         return res.status(500).json({
             status: false,
             message: res.__("SERVER_ERR") + e.message,
@@ -190,6 +194,7 @@ exports.convertHtmlToString = async (req, res) => {
             res.status(200).json({ success: false, message: 'Invalid content type (Expected text/html). Select HTML for request.' });
         }
     } catch (e) {
+        console.log(e);
         return res.status(500).json({
             status: false,
             message: res.__("SERVER_ERR") + e.message,

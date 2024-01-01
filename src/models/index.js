@@ -4,14 +4,13 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const { Op, QueryTypes } = require('sequelize');
-const config = require('../config/config.json');
 const basename = path.basename(__filename);
 const db = {};
 
 // Create a new Sequelize instance for database connection
-const sequelize = new Sequelize(config.DATABASE.dbName, config.DATABASE.dbUser, config.DATABASE.dbPassword, {
+const sequelize = new Sequelize(global.config.DATABASE.name, global.config.DATABASE.username, global.config.DATABASE.password, {
     dialect: 'mysql',
-    host: config.DATABASE.host,
+    host: global.config.DATABASE.host,
     logging: false
 });
 

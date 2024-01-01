@@ -1,17 +1,14 @@
 const nodemailer = require('nodemailer');
-const config = require('../config/config.json');
 
 let emailConfig = null;
 
-/**
- * Initialize the email configuration.
- */
+// Initialize the email configuration.
 emailConfig = {
-    host: config.SMTP_CONFIG && config.SMTP_CONFIG.host ? config.SMTP_CONFIG.host : 'localhost',
-    port: config.SMTP_CONFIG && config.SMTP_CONFIG.port ? config.SMTP_CONFIG.port : 25,
+    host: global.config.SMTP_CONFIG && global.config.SMTP_CONFIG.host ? global.config.SMTP_CONFIG.host : 'localhost',
+    port: global.config.SMTP_CONFIG && global.config.SMTP_CONFIG.port ? global.config.SMTP_CONFIG.port : 25,
     auth: {
-        user: config.SMTP_CONFIG && config.SMTP_CONFIG.user ? config.SMTP_CONFIG.user : null,
-        pass: config.SMTP_CONFIG && config.SMTP_CONFIG.password ? config.SMTP_CONFIG.password : null,
+        user: global.config.SMTP_CONFIG && global.config.SMTP_CONFIG.username ? global.config.SMTP_CONFIG.username : null,
+        pass: global.config.SMTP_CONFIG && global.config.SMTP_CONFIG.password ? global.config.SMTP_CONFIG.password : null,
     }
 };
 
@@ -25,7 +22,8 @@ emailConfig = {
 function sendEmail(to, subject, message) {
     return new Promise((resolve, reject) => {
         let transporter = null;
-        if (config.SMTP == true) {
+
+        if (global.config.SMTP == true) {
             if (!emailConfig) {
                 return Promise.reject(new Error('Email configuration is not initialized. update config file to set up the email configuration.'));
             }
@@ -40,7 +38,7 @@ function sendEmail(to, subject, message) {
         }
         // Email data with HTML message
         const mailOptions = {
-            from: config.SMTP_CONFIG.user,
+            from: global.config.SMTP_CONFIG && global.config.SMTP_CONFIG.username ? global.config.SMTP_CONFIG.username : 'noreply@example.com',
             to: to,
             subject: subject,
             html: message

@@ -1,23 +1,30 @@
 {
   "name": "node-auth-base-js",
-  "version": "1.0.3",
-  "description": "",
+  "version": "1.0.4",
+  "description": "NodeAuthBase-JS is an authentication library designed for Node.js, offering streamlined implementation of authentication functionalities within Express applications.",
   "main": "src/server.js",
   "bin": {
     "auth-boilerplate-js": "src/bin/index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hiral-makwana/NodeAuthBase-JS.git"
+  },
   "scripts": {
-    "build": "rmdir /s /q dist && tsc",
     "start": "nodemon",
+    "dev": "cross-env NODE_ENV=development node ./src/server.js",
+    "staging": "cross-env NODE_ENV=staging node ./src/server.js",
+    "testing": "cross-env NODE_ENV=testing node ./src/server.js",
+    "production": "cross-env NODE_ENV=production node ./src/server.js",
     "test": "mocha"
   },
-  
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "celebrate": "^15.0.1",
     "chai-http": "^4.4.0",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "handlebars": "^4.7.8",

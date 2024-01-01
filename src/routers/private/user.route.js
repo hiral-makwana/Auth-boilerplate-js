@@ -1,32 +1,31 @@
 const { Router } = require('express');
-const userController = require('../controller/user.controller');
-const userValidator = require('../validator/user.validator');
-const { verifyToken } = require('../middleware/auth');
-const upload = require('../helper/media.helper');
+const userController = require('../../controller/user.controller');
+const userValidator = require('../../validator/user.validator');
+const upload = require('../../helper/media.helper');
 const router = Router();
 
 /** Get all user's */
 router.get('/list', userController.getListOfUser);
 
 /**Change Password after login */
-router.post('/changePassword', userValidator.changePassword(), verifyToken, userController.changePassword);
+router.post('/change-password', userValidator.changePassword(),  userController.changePassword);
 
 /**Check validations*/
-router.post('/checkValidation', userValidator.checkValidation(), verifyToken, userController.checkValidation);
+router.post('/check-validation', userValidator.checkValidation(),  userController.checkValidation);
 
 /** Delete user api*/
-router.delete('/deleteUser/:userId', verifyToken, userController.deleteUser);
+router.delete('/delete-user/:userId',  userController.deleteUser);
 
-router.post('/htmlToString', userController.convertHtmlToString);
+router.post('/html-to-string', userController.convertHtmlToString);
 
 /**upload Profile */
-router.post('/upload/:userId', verifyToken, upload.single('avatar'), userController.profileUpload);
+router.post('/profile-upload/:userId',  upload.single('avatar'), userController.profileUpload);
 
 module.exports = router;
 
 /**
 * @swagger
-* /list:
+* /v1/private/list:
 *   get:
 *     summary: Get a list of users
 *     tags: [User]
@@ -63,7 +62,7 @@ module.exports = router;
 */
 /**
 * @swagger
-* /changePassword:
+* /v1/private/change-password:
 *   post:
 *     summary: Change user password after login
 *     tags: [User]
@@ -109,7 +108,7 @@ module.exports = router;
 */
 /**
 * @swagger
-* /checkValidation:
+* /v1/private/check-validation:
 *   post:
 *     summary: Check if a value exists in the database
 *     tags: [User]
@@ -158,7 +157,7 @@ module.exports = router;
 * tags:
 *   name: Authentication
 *   description: Authentication APIs
-* /deleteUser/{userId}:
+* /v1/private/delete-user/{userId}:
 *   delete:
 *     summary: Delete a user by ID
 *     tags: [User]
@@ -212,7 +211,7 @@ module.exports = router;
 * tags:
 *   name: User
 *   description: User-related APIs
-* /profile-upload/{userId}:
+* /v1/private/profile-upload/{userId}:
 *   post:
 *     summary: Upload profile image for a user
 *     tags: [User]
@@ -272,7 +271,7 @@ module.exports = router;
  * tags:
  *   name: HTML
  *   description: HTML Conversion APIs
- * /htmlToString:
+ * /v1/private/html-to-string:
  *   post:
  *     summary: Convert HTML to string
  *     tags: [HTML]
@@ -313,64 +312,3 @@ module.exports = router;
  *               success: false
  *               message: Server error while converting HTML
  */
-// /**
-//  * @swagger
-//  * tags:
-//  *   name: Config
-//  *   description: Email Configuration
-//  * /updateEmailConfig:
-//  *   put:
-//  *     summary: Update email configuration
-//  *     tags: [Config]
-//  *     parameters:
-//  *       - in: header
-//  *         name: Accept-Language
-//  *         description: The preferred language for the response.
-//  *         required: false
-//  *         schema:
-//  *           type: string
-//  *     requestBody:
-//  *       description: New configuration data
-//  *       required: true
-//  *       content:
-//  *         application/json:
-//  *           example:
-//  *             host: smtp.example.com
-//  *             port: 587
-//  *             user: your_username
-//  *             pass: your_password
-//  *     responses:
-//  *       200:
-//  *         description: Successful response with update status
-//  *         content:
-//  *           application/json:
-//  *             example:
-//  *               success: true
-//  *               message: Config updated successfully
-//  *       500:
-//  *         description: Internal server error
-//  *         content:
-//  *           application/json:
-//  *             example:
-//  *               success: false
-//  *               message: Error updating config
-//  */
-// export const updateConfig = async (req: any, res: any) => {
-//     try {
-//         const newConfig = req.body;
-
-//         const result = updateEmailConfig(newConfig);
-
-//         if (result.status == true) {
-//             res.status(200).json({ success: true, message: result.message });
-//         } else {
-//             res.status(500).json({ success: false, message: result.message });
-//         }
-//     } catch (e) {
-//         console.error(e);
-//         return res.status(500).json({
-//             status: false,
-//             message: res.__("SERVER_ERR") + e.message,
-//         });
-//     }
-// }

@@ -2,7 +2,7 @@
 	"ALREADY_REGISTERED": "Email is already registered.",
 	"ALREADY_VERIFIED": "User already verified.",
 	"CHANGE_PASSWORD": "Password change successfully.",
-	"CONFIG_NOT_UPDATE": "Error while updating config.",
+	"CONFIG_NOT_UPDATE": "Error while updating configuration.",
 	"CONFIG_UPDATED": "Config updated successfully.",
 	"FAIL_CREATE": "User unable to Register.",
 	"FIELD_NOT_FOUND": "Deletion status field (isDeleted) not found in the database.",

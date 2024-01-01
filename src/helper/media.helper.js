@@ -1,9 +1,8 @@
 const multer = require('multer');
 const fs = require('fs');
-const config = require('../config/config.json');
 const path = require('path');
 
-const uploadFolder = config.UPLOAD_DIR || 'uploads/';
+const uploadFolder = global.config.UPLOAD_DIR || 'uploads/';
 
 if (!fs.existsSync(uploadFolder)) {
   fs.mkdirSync(uploadFolder);
@@ -22,4 +21,5 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage
 })
+
 module.exports = upload

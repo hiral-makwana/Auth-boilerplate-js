@@ -1,13 +1,6 @@
 const { isCelebrateError } = require('celebrate');
 
 /**
- * @typedef {Object} CustomErrorMessages
- * @property {Object} key - The error key.
- * @property {Object} validationType - The validation type.
- * @property {string} message - The error message.
- */
-
-/**
  * Handles error messages for validation errors.
  * @param {any} err - The error object.
  * @param {Request} req - The request object.

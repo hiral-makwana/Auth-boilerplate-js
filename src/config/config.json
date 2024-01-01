@@ -1,24 +1,102 @@
 {
-   "PORT": 7000,
-   "DATABASE": {
-      "host": "localhost",
-      "dbName": "auth_apis",
-      "dbUser": "root",
-      "dbPassword": ""
+   "development": {
+      "PORT": 7000,
+      "DATABASE": {
+         "host": "localhost",
+         "name": "auth_apis",
+         "username": "root",
+         "password": ""
+      },
+      "JWT_SECRET": "ja932uwsjsiw98hjsdh090",
+      "JWT_EXPIRATION_TIME": "1h",
+      "API_BASE_PREFIX": "/",
+      "API_BASE_URL": "localhost:",
+      "HARD_DELETE": false,
+      "CUSTOM_TEMPLATE": false,
+      "UPLOAD_DIR": "src/uploads/",
+      "SMTP": true,
+      "SMTP_CONFIG": {
+         "host": "smtp.ethereal.email",
+         "port": 587,
+         "username": "oma.fisher43@ethereal.email",
+         "password": "9apvqjQBp6kY1K6vCu"
+      },
+      "SALT_ROUNDS": 10,
+      "OTP_LENGTH": 6
    },
-   "JWT_SECRET": "ja932uwsjsiw98hjsdh090",
-   "JWT_EXPIRATION_TIME": "1h",
-   "DEFAULT_ROUTE": "/",
-   "API_BASE_PREFIX": "/",
-   "BASE_URL": "localhost:7000",
-   "HARD_DELETE": false,
-   "CUSTOM_TEMPLATE": false,
-   "UPLOAD_DIR": "src/uploads/",
-   "SMTP": true,
-   "SMTP_CONFIG": {
-      "host": "smtp.ethereal.email",
-      "port": 587,
-      "user": "oma.fisher43@ethereal.email",
-      "password": "9apvqjQBp6kY1K6vCu"
+   "staging": {
+      "PORT": 8000,
+      "DATABASE": {
+         "host": "localhost",
+         "name": "auth_apis",
+         "username": "root",
+         "password": ""
+      },
+      "JWT_SECRET": "ja932uwsjsiw98hjsdh090",
+      "JWT_EXPIRATION_TIME": "1h",
+      "API_BASE_PREFIX": "/",
+      "API_BASE_URL": "localhost:",
+      "HARD_DELETE": false,
+      "CUSTOM_TEMPLATE": false,
+      "UPLOAD_DIR": "src/uploads/",
+      "SMTP": true,
+      "SMTP_CONFIG": {
+         "host": "smtp.ethereal.email",
+         "port": 587,
+         "username": "oma.fisher43@ethereal.email",
+         "password": "9apvqjQBp6kY1K6vCu"
+      },
+      "SALT_ROUNDS": 10,
+      "OTP_LENGTH": 6
+   },
+   "testing": {
+      "PORT": 7000,
+      "DATABASE": {
+         "host": "localhost",
+         "name": "auth_apis",
+         "username": "root",
+         "password": ""
+      },
+      "JWT_SECRET": "ja932uwsjsiw98hjsdh090",
+      "JWT_EXPIRATION_TIME": "1h",
+      "API_BASE_PREFIX": "/",
+      "API_BASE_URL": "localhost:",
+      "HARD_DELETE": false,
+      "CUSTOM_TEMPLATE": false,
+      "UPLOAD_DIR": "src/uploads/",
+      "SMTP": true,
+      "SMTP_CONFIG": {
+         "host": "smtp.ethereal.email",
+         "port": 587,
+         "username": "oma.fisher43@ethereal.email",
+         "password": "9apvqjQBp6kY1K6vCu"
+      },
+      "SALT_ROUNDS": 10,
+      "OTP_LENGTH": 6
+   },
+   "production": {
+      "PORT": 7000,
+      "DATABASE": {
+         "host": "localhost",
+         "name": "auth_apis",
+         "username": "root",
+         "password": ""
+      },
+      "JWT_SECRET": "ja932uwsjsiw98hjsdh090",
+      "JWT_EXPIRATION_TIME": "1h",
+      "API_BASE_PREFIX": "/",
+      "API_BASE_URL": "localhost:",
+      "HARD_DELETE": false,
+      "CUSTOM_TEMPLATE": false,
+      "UPLOAD_DIR": "src/uploads/",
+      "SMTP": true,
+      "SMTP_CONFIG": {
+         "host": "smtp.ethereal.email",
+         "port": 587,
+         "username": "oma.fisher43@ethereal.email",
+         "password": "9apvqjQBp6kY1K6vCu"
+      },
+      "SALT_ROUNDS": 10,
+      "OTP_LENGTH": 6
    }
 }

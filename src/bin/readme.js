@@ -5,6 +5,7 @@ async function createReadme(answers, projectDir) {
     const readmeContent = `# ${answers.name}
 
 ## Project Description
+
 ${answers.description}`;
 
     const readmePath = path.join(projectDir, "README.md");

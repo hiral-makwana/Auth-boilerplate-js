@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
-const config = require('../config/config.json');
 
-function verifyToken(req, res, next) {
+function userAuth(req, res, next) {
     const { authorization } = req.headers;
     if (authorization && authorization.startsWith("Bearer")) {
         try {
@@ -14,7 +13,7 @@ function verifyToken(req, res, next) {
                     });
                 }
 
-                jwt.verify(token, config.JWT_SECRET, (err, decodedToken) => {
+                jwt.verify(token, global.config.JWT_SECRET, (err, decodedToken) => {
                     if (err) {
                         if (err.name === 'TokenExpiredError') {
                             return res.status(401).json({
@@ -24,7 +23,7 @@ function verifyToken(req, res, next) {
                         }
                         return res.status(401).json({
                             status: false,
-                            message: res.__("INVALID_TOKEN"),
+                            message: res.__("INVALID_TOKEN") + err,
                         });
                     }
                     req.user = decodedToken;
@@ -48,4 +47,4 @@ function verifyToken(req, res, next) {
     }
 }
 
-module.exports = { verifyToken };
+module.exports = { userAuth };
