@@ -198,13 +198,13 @@ async function setup() {
         // Read the existing package.json file
         const packageJsonPath = path.join(appPath, "package.json");
         const existingPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
-
         // Update the properties with answers
         existingPackageJson.name = answers.name;
         existingPackageJson.author = answers.author;
         existingPackageJson.description = answers.description;
         existingPackageJson.version = "1.0.0";
 
+        delete existingPackageJson.repository
         // Write the updated package.json file
         fs.writeFileSync(packageJsonPath, JSON.stringify(existingPackageJson, null, 2));
 

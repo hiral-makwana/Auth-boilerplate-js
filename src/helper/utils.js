@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt');
 const fs = require('fs');
 const handlebars = require('handlebars');
 const { sendEmail } = require('../helper/email.helper');
+const { celebrate, Segments } = require('celebrate');
+const i18n = require('../helper/locale.helper');
 
 const generateRandomOtp = async (n) => {
     try {
@@ -127,9 +129,34 @@ function convertHtmlToString(html) {
     }
 }
 
+const validateSchema = (schema) => {
+    return async (req, res, next) => {
+        const language = req.headers['accept-language'] || 'en';
+        // Set the language for i18n
+        i18n.setLocale(language);
+        try {
+            // Dynamically load messages based on the selected language
+            const message = require(`../validator/messages/${language}`);
+            celebrate({ [Segments.BODY]: schema }, {
+                abortEarly: false,
+                messages: message.default || {},
+            })(req, res, next);
+        }
+        catch (error) {
+            console.error(`Error loading messages for language ${language}:`, error);
+            // Default to an empty object if messages cannot be loaded
+            celebrate({ [Segments.BODY]: schema }, {
+                abortEarly: false,
+                messages: {},
+            })(req, res, next);
+        }
+    };
+};
+
 module.exports = {
     generateRandomOtp,
     generateHash,
     generateOtpHtmlMessage,
     convertHtmlToString,
+    validateSchema
 };

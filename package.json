@@ -4,7 +4,7 @@
   "description": "NodeAuthBase-JS is an authentication library designed for Node.js, offering streamlined implementation of authentication functionalities within Express applications.",
   "main": "src/server.js",
   "bin": {
-    "auth-boilerplate-js": "src/bin/index.js"
+    "node-auth-base-js": "src/bin/index.js"
   },
   "repository": {
     "type": "git",

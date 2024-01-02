@@ -2,6 +2,7 @@ const keyName = 'otp';
 const requestType = {
     REGISTER: 'register',
     FORGOT: 'forgot',
+    REFRESH: 'refresh'
 };
 
 const status = {
