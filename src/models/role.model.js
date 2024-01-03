@@ -11,12 +11,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     roleName: {
       type: DataTypes.STRING,
-    },
-    createdBy: {
-      type: DataTypes.INTEGER,
-    },
-    updatedBy: {
-      type: DataTypes.INTEGER,
     }
   },
     {

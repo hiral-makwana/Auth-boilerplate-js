@@ -17,13 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         value: {
             type: DataTypes.STRING,
-        },
-        createdBy: {
-            type: DataTypes.INTEGER,
-        },
-        updatedBy: {
-            type: DataTypes.INTEGER,
-        },
+        }
     },
         {
             sequelize,
