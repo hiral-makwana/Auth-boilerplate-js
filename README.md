@@ -5,7 +5,9 @@ NodeAuthBase-JS is an authentication library designed for Node.js, offering stre
 ## Installation
 
 ```bash
-npx NodeAuthBase-JS <project-name>
+npx create-node-auth-base-js <project-name> or
+
+npm init node-auth-base-js <project-name>
 ```
 ## Manual Installation
 Clone the repo: 
