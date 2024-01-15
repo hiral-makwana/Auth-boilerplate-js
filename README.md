@@ -1,4 +1,4 @@
-# NodeAuthBase-JS
+# create-node-auth-base-js
 
 NodeAuthBase-JS is an authentication library designed for Node.js, offering streamlined implementation of authentication functionalities within Express applications. This library simplifies tasks such as managing Sequelize models, creating Express routes, configuring email settings, and setting up Swagger documentation to enhance the authentication process in your Node.js projects.
 
