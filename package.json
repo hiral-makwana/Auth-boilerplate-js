@@ -1,11 +1,9 @@
 {
-  "name": "node-auth-base-js",
-  "version": "1.0.4",
+  "name": "create-node-auth-base-js",
+  "version": "1.0.5",
   "description": "NodeAuthBase-JS is an authentication library designed for Node.js, offering streamlined implementation of authentication functionalities within Express applications.",
   "main": "src/server.js",
-  "bin": {
-    "node-auth-base-js": "src/bin/index.js"
-  },
+  "bin": "src/bin/create-nodejs-app.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/hiral-makwana/NodeAuthBase-JS.git"

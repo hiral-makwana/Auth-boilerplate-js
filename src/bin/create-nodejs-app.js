@@ -1,100 +1,11 @@
 #!/usr/bin/env node
 
-// const fs = require("fs");
-// const path = require("path");
-// const inquirer = require("inquirer");
-// const { execSync } = require('child_process');
-// const { createReadme } = require('./readme')
-
-// // The first argument will be the project name.
-// const projectName = process.argv[2];
-
-// // Create a project directory with the project name.
-// const currentDir = process.cwd();
-
-// const projectDir = path.resolve(currentDir, projectName);
-// fs.mkdirSync(projectDir, { recursive: true });
-
-// // Prompts
-// const questions = [
-//     {
-//         type: "input",
-//         name: "name",
-//         message: "Name of the project",
-//         validate: (name) => typeof name === "string",
-//     },
-//     {
-//         type: "input",
-//         name: "author",
-//         message: "Name of the author",
-//         validate: (name) => typeof name === "string",
-//     },
-//     {
-//         type: "input",
-//         name: "description",
-//         message: "Description",
-//         validate: (name) => typeof name === "string",
-//     }
-// ];
-
-// async function packagePrompts() {
-//     return await inquirer.prompt(questions);
-// }
-
-// async function run() {
-//     const answers = await packagePrompts();
-
-//     const templateDir = path.resolve(__dirname, "../../");
-//     fs.cpSync(templateDir, projectDir, { recursive: true });
-//     process.chdir(projectDir);
-
-//     console.log('Installing dependencies...');
-//     execSync('npm install');
-
-//     const filesToDelete = ['src/bin/index.js', '.npmignore', 'src/bin/readme.js'];
-//     console.log('Removing useless files');
-
-//     // Delete individual files
-//     filesToDelete.forEach((file) => {
-//         const filePath = path.join(projectDir, file);
-
-//         fs.unlink(filePath, (err) => {
-//             if (err) {
-//                 console.error(`Error deleting ${filePath}: ${err.message}`);
-//             }
-//         });
-//     });
-
-//     // Remove the 'src/bin' directory
-//     const binDirPath = path.join(projectDir, 'src/bin');
-//     fs.rmSync(binDirPath, { recursive: true });
-
-//     // Remove the '.git' directory
-//     execSync('npx rimraf ./.git');
-//     // Read the existing package.json file
-//     const packageJsonPath = path.join(projectDir, "package.json");
-//     const existingPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
-//     // Update the properties with answers
-//     existingPackageJson.name = answers.name;
-//     existingPackageJson.author = answers.author;
-//     existingPackageJson.description = answers.description;
-//     existingPackageJson.version = "1.0.0";
-//     // Write the updated package.json file
-//     fs.writeFileSync(packageJsonPath, JSON.stringify(existingPackageJson, null, 2));
-
-//     await createReadme(answers, projectDir)
-//     console.log("Success! Your new project is ready.");
-// }
-
-// // Make sure to call the asynchronous run function
-// run();
-
 const util = require('util');
 const path = require('path');
 const fs = require('fs');
 const inquirer = require("inquirer");
 const { createReadme } = require('./readme');
-
+const { execSync } = require('child_process');
 // Utility functions
 const exec = util.promisify(require('child_process').exec);
 
@@ -122,9 +33,9 @@ async function hasYarn() {
 if (process.argv.length < 3) {
     console.log('Please specify the target project directory.');
     console.log('For example:');
-    console.log('    npx create-nodejs-app my-app');
+    console.log('    npx create-node-auth-base-js my-app');
     console.log('    OR');
-    console.log('    npm init nodejs-app my-app');
+    console.log('    npm init node-auth-base-js my-app');
     process.exit(1);
 }
 
@@ -134,6 +45,7 @@ const folderName = process.argv[2];
 const appPath = path.join(ownPath, folderName);
 const repo = 'https://github.com/hiral-makwana/NodeAuthBase-JS.git';
 
+console.log(appPath)
 // Check if directory already exists
 try {
     fs.mkdirSync(appPath);
@@ -151,19 +63,19 @@ const questions = [
     {
         type: "input",
         name: "name",
-        message: "Name of the project",
+        message: "Project Name:",
         validate: (name) => typeof name === "string",
     },
     {
         type: "input",
         name: "author",
-        message: "Name of the author",
+        message: "Author Name:",
         validate: (name) => typeof name === "string",
     },
     {
         type: "input",
         name: "description",
-        message: "Description",
+        message: "Description:",
         validate: (name) => typeof name === "string",
     }
 ];
@@ -176,12 +88,13 @@ async function setup() {
     try {
         const answers = await packagePrompts();
         // Clone repo
-        console.log(`Downloading files from repo ${repo}`);
+        // const templateDir = path.resolve(__dirname, "../../");
+        // fs.cpSync(templateDir, appPath, { recursive: true });
+        // console.log(`Downloading files from repo ${repo}`);
         await runCmd(`git clone --depth 1 ${repo} ${folderName}`);
         console.log('Cloned successfully.');
         console.log('');
 
-        // Change directory
         process.chdir(appPath);
 
         // Install dependencies
@@ -209,7 +122,11 @@ async function setup() {
         fs.writeFileSync(packageJsonPath, JSON.stringify(existingPackageJson, null, 2));
 
         await createReadme(answers, appPath);
+        const binDirPath = path.join(appPath, 'src/bin');
+        fs.rmSync(binDirPath, { recursive: true });
 
+        // Remove the '.git' directory
+        execSync('npx rimraf ./.git');
         console.log('Installation is now complete!');
         console.log();
 
